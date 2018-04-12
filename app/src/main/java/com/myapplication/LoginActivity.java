@@ -3,6 +3,7 @@ package com.myapplication;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -23,6 +24,19 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +44,9 @@ import java.util.List;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+
+    private TextView textView;
+
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -136,12 +153,61 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        //デバッグ用
+
         AlertDialog.Builder dl = new AlertDialog.Builder( this );
         dl.setTitle("Test");
         dl.setMessage("Input email: " + mEmailView.getText().toString()
                 + "\nInput password: " + mPasswordView.getText().toString());
         dl.setPositiveButton("OK", null); //ボタン
         dl.show();
+
+
+        //ログインボタン押下後に扱うテキストを指定
+        setContentView(R.layout.activity_login);
+        textView = findViewById(R.id.textView3);
+
+        //HTTPリクエストを行う Queue を生成する
+        RequestQueue mQueue = Volley.newRequestQueue(this);
+
+        //指定したURLから文字列を取得する
+/*        String url = "http://128.237.114.243:3000";
+        mQueue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                textView.setText(response);
+            }
+        }, null));
+*/
+        //JSON
+//        String urljson = "http://128.237.114.243:3000/test?aaa=123";
+        String urljson = "http://128.237.114.243:3000/test?" +
+                "email=" + mEmailView.getText().toString() +
+                "&password=" + mPasswordView.getText().toString();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, urljson,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                JSONObject json = new JSONObject(response.toString());
+                                textView.setText("Response: " + response.toString()
+                                        + "\nEmail: " + json.getString("email")
+                                        + "\npassword: " + json.getString("password"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error here
+
+                        }
+                    }
+                );
+        mQueue.add(jsonObjectRequest);
 
         /*
         if (mAuthTask != null) {
