@@ -3,6 +3,7 @@ package com.myapplication;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +49,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  * A login screen that offers login via email/password.
  */
 public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+    private TextView textView;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -54,10 +66,11 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private UserSignupTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
+    private EditText mNicknameView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
@@ -68,14 +81,16 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         setContentView(R.layout.activity_sign_up);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+        //populateAutoComplete();
+
+        mNicknameView = (EditText) findViewById(R.id.nickname);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptSignup();
                     return true;
                 }
                 return false;
@@ -86,7 +101,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptSignup();
             }
         });
 
@@ -143,11 +158,65 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptSignup() {
+        //デバッグ用
+        AlertDialog.Builder dl = new AlertDialog.Builder( this );
+        dl.setTitle("Test");
+        dl.setMessage("email: " + mEmailView.getText().toString()
+                + "\nnickname: " + mNicknameView.getText().toString()
+                + "\npassword: " + mPasswordView.getText().toString());
+        dl.setPositiveButton("OK", null); //ボタン
+        dl.show();
+
+        //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
+        setContentView(R.layout.activity_sign_up);
+        textView = findViewById(R.id.textView4);
+
+        //HTTPリクエストを行う Queue を生成する
+        RequestQueue mQueue = Volley.newRequestQueue(this);
+
+        //JSON用URL
+        String urljson = "http://128.237.133.0:3000/user/createAccount?" +
+                "account=" + mEmailView.getText().toString() +
+                "&nickname=" + mNicknameView.getText().toString() +
+                "&password=" + mPasswordView.getText().toString();
+
+        //デバッグ用URL
+        urljson = "http://" + mEmailView.getText().toString() + ":3000/user/createAccount?";
+
+        //JSONでPOST
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, urljson,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                JSONObject json = new JSONObject(response.toString());
+                                JSONObject data = json.getJSONObject("data");
+                                String request = "\nEmail: " + data.getString("email")
+                                        + "\nNickname: " + data.getString("nickname")
+                                        + "\nPassword: " + data.getString("password");
+                                textView.setText(request);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error here
+                        }
+                    }
+                );
+        mQueue.add(jsonObjectRequest);
+
+        /*
         if (mAuthTask != null) {
             return;
         }
-
+        */
+        /*
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -188,6 +257,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
+        */
     }
 
     private boolean isEmailValid(String email) {
@@ -294,13 +364,15 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
+        private final String mNickname;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        UserSignupTask(String email, String nickname, String password) {
             mEmail = email;
+            mNickname = nickname;
             mPassword = password;
         }
 

@@ -28,6 +28,7 @@ public class NavigationActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
+//        setContentView(R.layout.content_navigation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -40,7 +41,6 @@ public class NavigationActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });*/
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -75,10 +75,12 @@ public class NavigationActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        /*
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
+        */
 
         return super.onOptionsItemSelected(item);
     }
@@ -108,14 +110,8 @@ public class NavigationActivity extends AppCompatActivity
                     });
             builder.show();
         } else if (id == R.id.nav_manage) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("test3")
-                    .setPositiveButton("got it", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // ボタンをクリックしたときの動作をここに書く
-                        }
-                    });
-            builder.show();
+            Intent intent = new Intent(this, SettingActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_send) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);

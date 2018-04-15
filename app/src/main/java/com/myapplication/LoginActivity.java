@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -44,7 +45,6 @@ import java.util.List;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-
     private TextView textView;
 
     /**
@@ -95,6 +95,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        TextView signupText = (TextView) findViewById(R.id.signupTextView);
+        signupText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptSignup();
             }
         });
 
@@ -154,16 +162,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void attemptLogin() {
         //デバッグ用
-
         AlertDialog.Builder dl = new AlertDialog.Builder( this );
         dl.setTitle("Test");
-        dl.setMessage("Input email: " + mEmailView.getText().toString()
-                + "\nInput password: " + mPasswordView.getText().toString());
+        dl.setMessage("email: " + mEmailView.getText().toString()
+                + "\npassword: " + mPasswordView.getText().toString());
         dl.setPositiveButton("OK", null); //ボタン
         dl.show();
 
-
-        //ログインボタン押下後に扱うテキストを指定
+        //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
         setContentView(R.layout.activity_login);
         textView = findViewById(R.id.textView3);
 
@@ -179,21 +185,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         }, null));
 */
-        //JSON
-//        String urljson = "http://128.237.114.243:3000/test?aaa=123";
-        String urljson = "http://128.237.114.243:3000/test?" +
-                "email=" + mEmailView.getText().toString() +
+        //JSON用URL
+        String urljson = "http://128.237.133.0:3000/user/login?" +
+                "account=" + mEmailView.getText().toString() +
                 "&password=" + mPasswordView.getText().toString();
+
+        //デバッグ用URL
+        urljson = "http://" + mEmailView.getText().toString() + ":3000/user/login?";
+
+        //JSONでGET
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, urljson,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
+                                System.out.println(response.toString());
                                 JSONObject json = new JSONObject(response.toString());
-                                textView.setText("Response: " + response.toString()
-                                        + "\nEmail: " + json.getString("email")
-                                        + "\npassword: " + json.getString("password"));
+                                JSONObject data = json.getJSONObject("data");
+                                String request = "\nEmail: " + data.getString("email")
+                                        + "\nPassword: " + data.getString("password");
+                                textView.setText(request);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -203,7 +215,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             // TODO: Handle error here
-
                         }
                     }
                 );
@@ -256,6 +267,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask.execute((Void) null);
         }
         */
+    }
+
+    //登録画面へ遷移
+    private void attemptSignup() {
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
     }
 
     private boolean isEmailValid(String email) {
