@@ -1,7 +1,10 @@
 package com.myapplication;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -30,6 +33,8 @@ public class SettingActivity extends AppCompatActivity {
     private EditText mNicknameView;
     private View mProgressView;
     private View mLoginFormView;
+    private SharedPreferences preferences;
+    private int idToCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,15 @@ public class SettingActivity extends AppCompatActivity {
                 forSetting2();
             }
         });
+
+        //Read Login Info
+        preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        idToCheck = preferences.getInt("id", -1);
+        //If logged in
+        if (idToCheck != -1) {
+            mEmailView.setText(preferences.getString("account", "Tap to log in"));
+            mNicknameView.setText(preferences.getString("nickname", ""));
+        }
     }
 
     private void forSetting2() {
@@ -86,8 +100,8 @@ public class SettingActivity extends AppCompatActivity {
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
         //JSON用URL
-        String url_json = "http://128.237.185.143:3000/user/changeNickname?" +
-                "userId=" + "6" +
+        String url_json = "http://128.237.210.113:3000/user/changeNickname?" +
+                "userId=" + idToCheck +
                 "&newNickname=" + mNicknameView.getText().toString();
 
         System.out.println(url_json);
@@ -108,6 +122,26 @@ public class SettingActivity extends AppCompatActivity {
                                     String account = data.getString("account");
                                     Integer id = data.getInt("id");
                                     textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
+
+                                    //Edit Login Info
+                                    preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.putString("nickname", nickname); //update the nickname
+                                    editor.apply();
+
+                                    //Display
+                                    mEmailView.setText(preferences.getString("account", "Tap to log in"));
+                                    mNicknameView.setText(preferences.getString("nickname", ""));
+
+                                    //User Feedback
+                                    AlertDialog.Builder dl = new AlertDialog.Builder(SettingActivity.this);
+                                    dl.setTitle("Your nickname has updated!");
+                                    dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    dl.show();
                                 } else {
                                     String msg = json.getString("msg");
                                     textView.setText("code:" + resultCode + ", msg:" + msg);

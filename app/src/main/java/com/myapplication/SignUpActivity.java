@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -76,6 +78,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private View mProgressView;
     private View mLoginFormView;
     private Button mEmailSignInButton;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +186,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
         //JSON用URL
-        String url_json = "http://128.237.185.143:3000/user/createAccount?" +
+        String url_json = "http://128.237.210.113:3000/user/createAccount?" +
                 "account=" + mEmailView.getText().toString() +
                 "&nickname=" + mNicknameView.getText().toString() +
                 "&password=" + mPasswordView.getText().toString();
@@ -206,6 +209,14 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                                 String account = data.getString("account");
                                 Integer id = data.getInt("id");
                                 textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
+
+                                //Edit Login Info
+                                preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putInt("id", id);
+                                editor.putString("account", account);
+                                editor.putString("nickname", nickname);
+                                editor.apply();
 
                                 //User Feedback
                                 AlertDialog.Builder dl = new AlertDialog.Builder(SignUpActivity.this);

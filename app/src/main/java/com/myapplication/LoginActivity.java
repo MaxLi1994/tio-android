@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,6 +44,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +82,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private Button mEmailSignInButton;
     private TextView signupText;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,7 +197,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final RequestQueue mQueue = Volley.newRequestQueue(this);
 
         //JSON用URL
-        url_json = "http://128.237.185.143:3000/user/login?" +
+        url_json = "http://128.237.210.113:3000/user/login?" +
                 "account=" + mEmailView.getText().toString() +
                 "&password=" + mPasswordView.getText().toString();
 
@@ -217,8 +220,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 Integer id = data.getInt("id");
                                 textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
 
-                                //Keep Login Info
-                                SharedPreferences preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                //Edit Login Info
+                                preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = preferences.edit();
                                 editor.putInt("id", id);
                                 editor.putString("account", account);

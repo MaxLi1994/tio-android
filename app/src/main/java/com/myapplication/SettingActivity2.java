@@ -1,6 +1,9 @@
 package com.myapplication;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +30,7 @@ public class SettingActivity2 extends AppCompatActivity {
     private EditText mNicknameView;
     private View mProgressView;
     private View mLoginFormView;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,7 @@ public class SettingActivity2 extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptChangeNickname();
+                attemptChangePassword();
             }
         });
 
@@ -50,7 +54,7 @@ public class SettingActivity2 extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    private void attemptChangeNickname() {
+    private void attemptChangePassword() {
         //デバッグ用
         /*
         AlertDialog.Builder dl = new AlertDialog.Builder(this);
@@ -68,9 +72,12 @@ public class SettingActivity2 extends AppCompatActivity {
         //HTTPリクエストを行う Queue を生成する
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
+        preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        int idToCheck = preferences.getInt("id",-1);
+
         //JSON用URL
-        String url_json = "http://128.237.185.143:3000/user/changePassword?" +
-                "userId=" + "6" +
+        String url_json = "http://128.237.210.113:3000/user/changePassword?" +
+                "userId=" + idToCheck+
                 "&oldPassword=" + mEmailView.getText().toString() +
                 "&newPassword=" + mNicknameView.getText().toString();
 
@@ -89,6 +96,16 @@ public class SettingActivity2 extends AppCompatActivity {
                                     if(resultCode.equals("0")){
                                         String msg = json.getString("data");
                                         textView.setText("code:" + resultCode + ", msg:" + msg);
+
+                                        //User Feedback
+                                        AlertDialog.Builder dl = new AlertDialog.Builder(SettingActivity2.this);
+                                        dl.setTitle("Your password has updated!");
+                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                        dl.show();
                                     } else {
                                         String msg = json.getString("msg");
                                         textView.setText("code:" + resultCode + ", msg:" + msg);

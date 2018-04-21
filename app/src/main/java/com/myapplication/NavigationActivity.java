@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.internal.NavigationMenuPresenter;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,16 +22,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    private int idGlobal = 0;
-    private String accountGlobal = "";
+    private int idGlobal = -1;
+    private String accountGlobal = "Tap to log in";
     private String nicknameGlobal = "";
     private TextView nicknameField;
     private TextView accountField;
+    private SharedPreferences preferences;
+    private NavigationView navigationView;
+    private View header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +60,7 @@ public class NavigationActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         findViewById(R.id.imageView6).setOnClickListener(new View.OnClickListener() {
@@ -66,16 +71,60 @@ public class NavigationActivity extends AppCompatActivity
         });
 
         //Read Login Info
-        SharedPreferences preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
         idGlobal = preferences.getInt("id", -1);
-        accountGlobal = preferences.getString("account", "test@xxx.com");
-        nicknameGlobal = preferences.getString("nickname", "user");
+        accountGlobal = preferences.getString("account", "Tap to log in");
+        nicknameGlobal = preferences.getString("nickname", "");
 
-        //Set Login Info
-//        nicknameField = findViewById(R.id.nickname1);
-//        nicknameField.setText(nicknameGlobal);
-//        accountField = findViewById(R.id.account1);
-//        accountField.setText(accountGlobal);
+        //Display Login Info
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        header = navigationView.getHeaderView(0);
+        nicknameField = (TextView)header.findViewById(R.id.nickname1);
+        nicknameField.setText(nicknameGlobal);
+        accountField = (TextView)header.findViewById(R.id.account1);
+        accountField.setText(accountGlobal);
+
+        //Tap the navigation bar
+        nicknameField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(idGlobal == -1){
+                    goToLogin(); //If not logged in (-1), go to Login
+                } else {
+                    goToSetting(); //If logged in, go to Setting
+                }
+            }
+        });
+        accountField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(idGlobal == -1){
+                    goToLogin(); //If not logged in (-1), go to Login
+                } else {
+                    goToSetting(); //If logged in, go to Setting
+                }
+            }
+        });
+    }
+
+    //Always being called when returned to the home screen
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+
+        //Read Login Info
+        preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        idGlobal = preferences.getInt("id", -1);
+        accountGlobal = preferences.getString("account", "Tap to log in");
+        nicknameGlobal = preferences.getString("nickname", "");
+
+        //Display Login Info
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        header = navigationView.getHeaderView(0);
+        nicknameField = (TextView)header.findViewById(R.id.nickname1);
+        nicknameField.setText(nicknameGlobal);
+        accountField = (TextView)header.findViewById(R.id.account1);
+        accountField.setText(accountGlobal);
     }
 
     public void goToCamera(){
@@ -141,16 +190,61 @@ public class NavigationActivity extends AppCompatActivity
                         }
                     });
             builder.show();
-        } else if (id == R.id.nav_manage) {
-            Intent intent = new Intent(this, SettingActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_send) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
+        } else if (id == R.id.nav_share) {
+            logout();
         }
+        /*else if (id == R.id.nav_manage) {
+            goToSetting();
+        } else if (id == R.id.nav_send) {
+            goToLogin();
+        } */
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void goToLogin(){
+        NavigationActivity.this.onPause();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToSetting(){
+        NavigationActivity.this.onPause();
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
+    }
+
+    public void logout(){
+        //Edit Login Info
+        preferences =getSharedPreferences("DATA",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+
+        //User Feedback
+        AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
+        dl.setTitle("You have logged out.");
+        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dl.show();
+
+        //Read Login Info
+        preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        idGlobal = preferences.getInt("id", -1);
+        accountGlobal = preferences.getString("account", "Tap to log in");
+        nicknameGlobal = preferences.getString("nickname", "");
+
+        //Display Login Info
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        header = navigationView.getHeaderView(0);
+        nicknameField = (TextView)header.findViewById(R.id.nickname1);
+        nicknameField.setText(nicknameGlobal);
+        accountField = (TextView)header.findViewById(R.id.account1);
+        accountField.setText(accountGlobal);
     }
 }
