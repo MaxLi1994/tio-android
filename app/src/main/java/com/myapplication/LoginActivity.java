@@ -5,10 +5,15 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,6 +52,9 @@ import java.util.List;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
     private TextView textView;
+    private String url_json;
+    private String resultCode;
+    private String msg;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -69,11 +78,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Button mEmailSignInButton;
+    private TextView signupText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setup();
+    }
+
+    public void setup(){
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         //populateAutoComplete();
@@ -90,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        TextView signupText = (TextView) findViewById(R.id.signupTextView);
+        signupText = (TextView) findViewById(R.id.signupTextView);
         signupText.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,6 +176,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        /*
         //デバッグ用
         AlertDialog.Builder dl = new AlertDialog.Builder( this );
         dl.setTitle("Test");
@@ -168,56 +184,85 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 + "\npassword: " + mPasswordView.getText().toString());
         dl.setPositiveButton("OK", null); //ボタン
         dl.show();
+        */
 
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
         setContentView(R.layout.activity_login);
         textView = findViewById(R.id.textView3);
 
         //HTTPリクエストを行う Queue を生成する
-        RequestQueue mQueue = Volley.newRequestQueue(this);
+        final RequestQueue mQueue = Volley.newRequestQueue(this);
 
-        //指定したURLから文字列を取得する
-/*        String url = "http://128.237.114.243:3000";
-        mQueue.add(new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                textView.setText(response);
-            }
-        }, null));
-*/
         //JSON用URL
-        String urljson = "http://128.237.133.0:3000/user/login?" +
+        url_json = "http://128.237.185.143:3000/user/login?" +
                 "account=" + mEmailView.getText().toString() +
                 "&password=" + mPasswordView.getText().toString();
 
-        //デバッグ用URL
-        urljson = "http://" + mEmailView.getText().toString() + ":3000/user/login?";
+        System.out.println(url_json);
 
         //JSONでGET
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, urljson,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                System.out.println(response.toString());
-                                JSONObject json = new JSONObject(response.toString());
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+            (Request.Method.GET, url_json,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject json = new JSONObject(response.toString());
+                            resultCode = json.getString("code");
+
+                            if(resultCode.equals("0")){
                                 JSONObject data = json.getJSONObject("data");
-                                String request = "\nEmail: " + data.getString("email")
-                                        + "\nPassword: " + data.getString("password");
-                                textView.setText(request);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                String account = data.getString("account");
+                                String nickname = data.getString("nickname");
+                                Integer id = data.getInt("id");
+                                textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
+
+                                //Keep Login Info
+                                SharedPreferences preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putInt("id", id);
+                                editor.putString("account", account);
+                                editor.putString("nickname", nickname);
+                                editor.apply();
+
+                                //User Feedback
+                                AlertDialog.Builder dl = new AlertDialog.Builder(LoginActivity.this);
+                                dl.setTitle("Login Successful!");
+                                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        LoginActivity.this.finish();//カテゴリ画面へ戻る
+                                    }
+                                });
+                                dl.show();
+                            } else {
+                                msg = json.getString("msg");
+                                textView.setText("code:" + resultCode + ", msg:" + msg);
+
+                                //User Feedback
+                                AlertDialog.Builder dl = new AlertDialog.Builder(LoginActivity.this);
+                                dl.setTitle("Error");
+                                dl.setMessage(msg);
+                                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        setup();//再度初期化して各種リスナー起動
+                                    }
+                                });
+                                dl.show();
                             }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // TODO: Handle error here
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                );
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error here
+                    }
+                }
+            );
         mQueue.add(jsonObjectRequest);
 
         /*

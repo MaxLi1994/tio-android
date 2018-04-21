@@ -69,51 +69,60 @@ public class SettingActivity extends AppCompatActivity {
 
     private void attemptChangeNickname() {
         //デバッグ用
+        /*
         AlertDialog.Builder dl = new AlertDialog.Builder(this);
         dl.setTitle("Test");
         dl.setMessage("email: " + mEmailView.getText().toString()
                 + "\nnickname: " + mNicknameView.getText().toString());
         dl.setPositiveButton("OK", null); //ボタン
         dl.show();
+        */
 
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
         setContentView(R.layout.activity_setting);
-        textView = findViewById(R.id.textView4);
+        textView = findViewById(R.id.textView5);
 
         //HTTPリクエストを行う Queue を生成する
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
         //JSON用URL
-        String urljson = "http://128.237.133.0:3000/user/changeNickname?" +
-                "account=" + mEmailView.getText().toString() +
-                "&nickname=" + mNicknameView.getText().toString();
+        String url_json = "http://128.237.185.143:3000/user/changeNickname?" +
+                "userId=" + "6" +
+                "&newNickname=" + mNicknameView.getText().toString();
 
-        //デバッグ用URL
-        urljson = "http://" + mEmailView.getText().toString() + ":3000/user/changeNickname?";
+        System.out.println(url_json);
 
         //JSONでPOST
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, urljson,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    JSONObject json = new JSONObject(response.toString());
+            (Request.Method.POST, url_json,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                JSONObject json = new JSONObject(response.toString());
+                                String resultCode = json.getString("code");
+
+                                if(resultCode.equals("0")){
                                     JSONObject data = json.getJSONObject("data");
-                                    String request = "\nEmail: " + data.getString("email")
-                                            + "\nNickname: " + data.getString("nickname");
-                                    textView.setText(request);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    String nickname = data.getString("nickname");
+                                    String account = data.getString("account");
+                                    Integer id = data.getInt("id");
+                                    textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
+                                } else {
+                                    String msg = json.getString("msg");
+                                    textView.setText("code:" + resultCode + ", msg:" + msg);
                                 }
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error here
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error here
+                        }
+                    }
                 );
         mQueue.add(jsonObjectRequest);
     }

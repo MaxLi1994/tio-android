@@ -2,8 +2,10 @@ package com.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.internal.NavigationMenuPresenter;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +25,12 @@ import android.widget.TextView;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
+
+    private int idGlobal = 0;
+    private String accountGlobal = "";
+    private String nicknameGlobal = "";
+    private TextView nicknameField;
+    private TextView accountField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,30 @@ public class NavigationActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        findViewById(R.id.imageView6).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToCamera();
+            }
+        });
+
+        //Read Login Info
+        SharedPreferences preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        idGlobal = preferences.getInt("id", -1);
+        accountGlobal = preferences.getString("account", "test@xxx.com");
+        nicknameGlobal = preferences.getString("nickname", "user");
+
+        //Set Login Info
+//        nicknameField = findViewById(R.id.nickname1);
+//        nicknameField.setText(nicknameGlobal);
+//        accountField = findViewById(R.id.account1);
+//        accountField.setText(accountGlobal);
+    }
+
+    public void goToCamera(){
+        Intent intent = new Intent(this, CameraActivity.class);
+        startActivity(intent);
     }
 
     @Override

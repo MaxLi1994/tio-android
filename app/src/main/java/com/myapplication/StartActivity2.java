@@ -37,9 +37,11 @@ public class StartActivity2 extends AppCompatActivity implements View.OnClickLis
         if(id == R.id.female) {
             Intent intent = new Intent(this, NavigationActivity.class);
             startActivity(intent);
+            finish();
         } else {
             Intent intent2 = new Intent(this, StartActivity.class);
             startActivity(intent2);
+            finish();
         }
     }
 }

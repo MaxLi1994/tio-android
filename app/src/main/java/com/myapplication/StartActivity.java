@@ -1,7 +1,9 @@
 package com.myapplication;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,10 +40,12 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         if(id == R.id.male) {
             Intent intent = new Intent(this, NavigationActivity.class);
             startActivity(intent);
+            finish();
             System.out.println("des");
         } else {
             Intent intent2 = new Intent(this, StartActivity2.class);
             startActivity(intent2);
+            finish();
         }
     }
 }

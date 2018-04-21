@@ -52,39 +52,47 @@ public class SettingActivity2 extends AppCompatActivity {
 
     private void attemptChangeNickname() {
         //デバッグ用
+        /*
         AlertDialog.Builder dl = new AlertDialog.Builder(this);
         dl.setTitle("Test");
         dl.setMessage("old: " + mEmailView.getText().toString()
                 + "\nnew: " + mNicknameView.getText().toString());
         dl.setPositiveButton("OK", null); //ボタン
         dl.show();
+        */
 
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
         setContentView(R.layout.activity_setting2);
-        textView = findViewById(R.id.textView4);
+        textView = findViewById(R.id.textView6);
 
         //HTTPリクエストを行う Queue を生成する
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
         //JSON用URL
-        String urljson = "http://128.237.133.0:3000/user/changePassword?" +
-                "oldPassword=" + mEmailView.getText().toString() +
+        String url_json = "http://128.237.185.143:3000/user/changePassword?" +
+                "userId=" + "6" +
+                "&oldPassword=" + mEmailView.getText().toString() +
                 "&newPassword=" + mNicknameView.getText().toString();
 
-        //デバッグ用URL
-        urljson = "http://" + mEmailView.getText().toString() + ":3000/user/changePassword?";
+        System.out.println(url_json);
 
         //JSONでPOST
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, urljson,
+                (Request.Method.POST, url_json,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
                                     JSONObject json = new JSONObject(response.toString());
-                                    JSONObject data = json.getJSONObject("data");
-                                    String request = "\nResponse Message: " + data.getString("msg");
-                                    textView.setText(request);
+                                    String resultCode = json.getString("code");
+
+                                    if(resultCode.equals("0")){
+                                        String msg = json.getString("data");
+                                        textView.setText("code:" + resultCode + ", msg:" + msg);
+                                    } else {
+                                        String msg = json.getString("msg");
+                                        textView.setText("code:" + resultCode + ", msg:" + msg);
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -99,5 +107,4 @@ public class SettingActivity2 extends AppCompatActivity {
                 );
         mQueue.add(jsonObjectRequest);
     }
-
 }

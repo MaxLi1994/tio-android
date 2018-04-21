@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -74,11 +75,16 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Button mEmailSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        setup();
+    }
+
+    public void setup(){
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         //populateAutoComplete();
@@ -97,7 +103,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,7 +158,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -160,6 +165,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
      */
     private void attemptSignup() {
         //デバッグ用
+        /*
         AlertDialog.Builder dl = new AlertDialog.Builder( this );
         dl.setTitle("Test");
         dl.setMessage("email: " + mEmailView.getText().toString()
@@ -167,6 +173,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                 + "\npassword: " + mPasswordView.getText().toString());
         dl.setPositiveButton("OK", null); //ボタン
         dl.show();
+        */
 
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
         setContentView(R.layout.activity_sign_up);
@@ -176,39 +183,68 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
         //JSON用URL
-        String urljson = "http://128.237.133.0:3000/user/createAccount?" +
+        String url_json = "http://128.237.185.143:3000/user/createAccount?" +
                 "account=" + mEmailView.getText().toString() +
                 "&nickname=" + mNicknameView.getText().toString() +
                 "&password=" + mPasswordView.getText().toString();
 
-        //デバッグ用URL
-        urljson = "http://" + mEmailView.getText().toString() + ":3000/user/createAccount?";
+        System.out.println(url_json);
 
         //JSONでPOST
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, urljson,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                JSONObject json = new JSONObject(response.toString());
+            (Request.Method.POST, url_json,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject json = new JSONObject(response.toString());
+                            String resultCode = json.getString("code");
+
+                            if(resultCode.equals("0")){
                                 JSONObject data = json.getJSONObject("data");
-                                String request = "\nEmail: " + data.getString("email")
-                                        + "\nNickname: " + data.getString("nickname")
-                                        + "\nPassword: " + data.getString("password");
-                                textView.setText(request);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                String nickname = data.getString("nickname");
+                                String account = data.getString("account");
+                                Integer id = data.getInt("id");
+                                textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
+
+                                //User Feedback
+                                AlertDialog.Builder dl = new AlertDialog.Builder(SignUpActivity.this);
+                                dl.setTitle("Sign Up Successful!");
+                                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        SignUpActivity.this.finish();//ログイン画面へ戻る
+                                    }
+                                });
+                                dl.show();
+                            } else {
+                                String msg = json.getString("msg");
+                                textView.setText("code:" + resultCode + ", msg:" + msg);
+
+                                //User Feedback
+                                AlertDialog.Builder dl = new AlertDialog.Builder(SignUpActivity.this);
+                                dl.setTitle("Error");
+                                dl.setMessage(msg);
+                                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        setup();//再度初期化して各種リスナー起動
+                                    }
+                                });
+                                dl.show();
                             }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // TODO: Handle error here
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                );
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error here
+                    }
+                }
+            );
         mQueue.add(jsonObjectRequest);
 
         /*
