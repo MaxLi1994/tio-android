@@ -34,8 +34,12 @@
         <activity
             android:name=".SettingActivity2"
             android:label="Settings" />
-        <activity android:name=".StartActivity2" />
-        <activity android:name=".StartActivity">
+        <activity
+            android:name=".StartActivity2"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".StartActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
