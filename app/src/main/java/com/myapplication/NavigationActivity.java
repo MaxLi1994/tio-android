@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.internal.NavigationMenuPresenter;
@@ -31,8 +32,7 @@ public class NavigationActivity extends AppCompatActivity
     private int idGlobal = -1;
     private String accountGlobal = "Tap to log in";
     private String nicknameGlobal = "";
-    private TextView nicknameField;
-    private TextView accountField;
+    private TextView nicknameField, accountField, test;
     private SharedPreferences preferences;
     private NavigationView navigationView;
     private View header;
@@ -41,9 +41,21 @@ public class NavigationActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
-//        setContentView(R.layout.content_navigation);
+        //setContentView(R.layout.content_navigation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //read color info
+        preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        String color = preferences.getString("theme", "blue");
+        //If logged in
+        if (color.equals("blue")) {
+            test = findViewById(R.id.textView5);
+            test.setBackgroundColor(Color.rgb(153, 217, 234));
+        } else {
+            test = findViewById(R.id.textView5);
+            test.setBackgroundColor(Color.rgb(255, 174, 201));
+        }
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
