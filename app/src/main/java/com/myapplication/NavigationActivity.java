@@ -37,6 +37,16 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -49,10 +59,15 @@ public class NavigationActivity extends AppCompatActivity
     private NavigationView navigationView;
     private View header;
 
-    private String[] categoryList;
+    private String[] categoryList, comodityName;
     private Spinner spinner;
 
-    private static final String[] brandName = {
+    private TextView textView;
+    private String url_json;
+    private String resultCode;
+    private String msg;
+
+    private String[] brandName = new String[]{
             "GUCCI",
             "LOUIS VUITTON",
             "RAY BAN",
@@ -60,11 +75,18 @@ public class NavigationActivity extends AppCompatActivity
     };
 
     // drawableに画像を入れる、R.id.xxx はint型
-    private static final int[] photos = {
+    private int[] photos = new int[]{
             R.drawable.glass,
             R.drawable.hat,
             R.drawable.lip,
             R.drawable.watch
+    };
+
+    private String[] commodityName = new String[]{
+            "black sunglasses ABC",
+            "ARG-GOLD34",
+            "WC-White2349",
+            "UP-23987",
     };
 
     @Override
@@ -76,6 +98,75 @@ public class NavigationActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //HTTPリクエストを行う Queue を生成する
+        RequestQueue mQueue = Volley.newRequestQueue(this);
+
+        //JSON用URL
+        String url_json = "http://128.237.210.113:3000/commodity/list";
+
+        //JSONでGET
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url_json,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    JSONObject json = new JSONObject(response.toString());
+                                    resultCode = json.getString("code");
+
+                                    if(resultCode.equals("0")){
+                                        JSONObject data = json.getJSONObject("data");
+                                        String commodityName = data.getString("name");
+                                        String brandName = data.getString("brandName");/////要確認
+                                        String imageURL = data.getString("desc_img");
+                                        Integer id = data.getInt("id");
+
+                                        //User Feedback
+                                        AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
+                                        dl.setTitle("code:" + resultCode + ", commodity:" + commodityName + ", URL:" + imageURL + ", id:" + id);
+                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                NavigationActivity.this.finish();//カテゴリ画面へ戻る
+                                            }
+                                        });
+                                        dl.show();
+                                        /*
+                                        //Edit Login Info
+                                        preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = preferences.edit();
+                                        editor.putInt("id", id);
+                                        editor.putString("account", account);
+                                        editor.putString("nickname", nickname);
+                                        editor.apply();
+                                        */
+                                    } else {
+                                        msg = json.getString("msg");
+                                        //User Feedback
+                                        AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
+                                        dl.setTitle("code:" + resultCode + ", msg:" + msg);
+                                        dl.setMessage(msg);
+                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                        dl.show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO: Handle error here
+                            }
+                        }
+                );
+        mQueue.add(jsonObjectRequest);
+
         //set category list on toolbar
         categoryList = new String[] {"All Kinds", "Sunglasses", "Lipsticks", "Hats", "Watches"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
@@ -86,16 +177,45 @@ public class NavigationActivity extends AppCompatActivity
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 String selectedCategory = spinner.getSelectedItem().toString();
-                //Feedback
-                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
-                dl.setTitle(selectedCategory);
-                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dl.show();
+
+                if(selectedCategory.equals("All Kinds")){
+                    brandName = new String[]{"GUCCI","LOUIS VUITTON","RAY BAN","CHANEL"};
+                    photos = new int[]{R.drawable.glass,R.drawable.hat,R.drawable.lip,R.drawable.watch};
+                    commodityName = new String[]{"black sunglasses ABC","ARG-GOLD34","WC-White2349","UP-23987"};
+                    updateListView();
+                } else if(selectedCategory.equals("Sunglasses")) {
+                    brandName = new String[]{"GUCCI"};
+                    photos = new int[]{R.drawable.glass};
+                    commodityName = new String[]{"black sunglasses ABC"};
+                    updateListView();
+                } else if(selectedCategory.equals("Lipsticks")){
+                    brandName = new String[]{"RAY BAN","CHANEL"};
+                    photos = new int[]{R.drawable.lip,R.drawable.watch};
+                    commodityName = new String[]{"WC-White2349","UP-23987"};
+                    updateListView();
+                } else if(selectedCategory.equals("Hats")) {
+                    brandName = new String[]{"LOUIS VUITTON"};
+                    photos = new int[]{R.drawable.hat};
+                    commodityName = new String[]{"ARG-GOLD34"};
+                    updateListView();
+                } else if(selectedCategory.equals("Watches")){
+                    brandName = new String[]{"CHANEL"};
+                    photos = new int[]{R.drawable.watch};
+                    commodityName = new String[]{"UP-23987"};
+                    updateListView();
+                }
+
+//                //Feedback
+//                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
+//                dl.setTitle(selectedCategory);
+//                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dl.show();
             }
 
             @Override
@@ -161,51 +281,10 @@ public class NavigationActivity extends AppCompatActivity
             }
         });
 
-        String[] commodityName = new String[]{
-                "black sunglasses ABC",
-                "ARG-GOLD34",
-                "WC-White2349",
-                "UP-23987",
-        };
-
         // nameからメルアド作成
 //        for(int i=0; i< brandName.length ;i++ ){
 //            commodityName[i] = brandName[i];
 //        }
-
-        // ListViewのインスタンスを生成
-        ListView listView = findViewById(R.id.listView);
-
-        // BaseAdapter を継承したadapterのインスタンスを生成
-        // レイアウトファイル list_items.xml を
-        // activity_main.xml に inflate するためにadapterに引数として渡す
-        BaseAdapter ba = new TestAdapter(this.getApplicationContext(),
-                R.layout.list_items, brandName, commodityName, photos);
-
-        // ListViewにadapterをセット
-        listView.setAdapter(ba);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                ListView listView = (ListView) parent;
-                // クリックされたアイテムを取得します
-                String item = listView.getItemAtPosition(position).toString();
-
-                //Feedback
-                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
-                dl.setTitle(item);
-                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dl.show();
-
-                goToCamera();
-            }
-        });
     }
 
     //Always being called when returned to the home screen
@@ -226,6 +305,44 @@ public class NavigationActivity extends AppCompatActivity
         nicknameField.setText(nicknameGlobal);
         accountField = header.findViewById(R.id.account1);
         accountField.setText(accountGlobal);
+    }
+
+    public void updateListView(){
+
+        // ListViewのインスタンスを生成
+        ListView listView = findViewById(R.id.listView);
+
+        // BaseAdapter を継承したadapterのインスタンスを生成
+        // レイアウトファイル list_items.xml を
+        // activity_main.xml に inflate するためにadapterに引数として渡す
+        BaseAdapter ba = new TestAdapter(this.getApplicationContext(),
+                R.layout.list_items, brandName, commodityName, photos);
+
+        // ListViewにadapterをセット
+        listView.setAdapter(ba);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                ListView listView = (ListView) parent;
+                // クリックされたアイテムを取得します
+                String item = listView.getItemAtPosition(position).toString();
+
+                //Feedback
+                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
+                dl.setTitle(item);
+                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dl.show();
+
+                goToCamera();
+            }
+        });
     }
 
     public void goToCamera(){
