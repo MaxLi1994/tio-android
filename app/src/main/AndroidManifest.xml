@@ -30,7 +30,7 @@
             android:label="Settings" />
         <activity
             android:name=".CategoryActivity"
-            android:label="Category" />
+             />
         <activity
             android:name=".SettingActivity2"
             android:label="Settings" />
