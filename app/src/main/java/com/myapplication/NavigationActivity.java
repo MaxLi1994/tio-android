@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.internal.NavigationMenuPresenter;
@@ -24,13 +25,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,13 +43,29 @@ public class NavigationActivity extends AppCompatActivity
     private int idGlobal = -1;
     private String accountGlobal = "Tap to log in";
     private String nicknameGlobal = "";
-    private TextView nicknameField, accountField, test;
+    private TextView nicknameField, accountField;
+    private ListView test;
     private SharedPreferences preferences;
     private NavigationView navigationView;
     private View header;
 
     private String[] categoryList;
     private Spinner spinner;
+
+    private static final String[] brandName = {
+            "GUCCI",
+            "LOUIS VUITTON",
+            "RAY BAN",
+            "CHANEL",
+    };
+
+    // drawableに画像を入れる、R.id.xxx はint型
+    private static final int[] photos = {
+            R.drawable.glass,
+            R.drawable.hat,
+            R.drawable.lip,
+            R.drawable.watch
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +83,36 @@ public class NavigationActivity extends AppCompatActivity
 
         spinner = findViewById(R.id.tool_bar_spinner);
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedCategory = spinner.getSelectedItem().toString();
+                //Feedback
+                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
+                dl.setTitle(selectedCategory);
+                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dl.show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         //read color info
         preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
         String color = preferences.getString("theme", "blue");
         //If logged in
         if (color.equals("blue")) {
-            test = findViewById(R.id.textView5);
+            test = findViewById(R.id.listView);
             test.setBackgroundColor(Color.rgb(153, 217, 234));
         } else {
-            test = findViewById(R.id.textView5);
+            test = findViewById(R.id.listView);
             test.setBackgroundColor(Color.rgb(255, 174, 201));
         }
 
@@ -83,13 +124,6 @@ public class NavigationActivity extends AppCompatActivity
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        findViewById(R.id.imageView6).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToCamera();
-            }
-        });
 
         //Read Login Info
         preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
@@ -124,6 +158,52 @@ public class NavigationActivity extends AppCompatActivity
                 } else {
                     goToSetting(); //If logged in, go to Setting
                 }
+            }
+        });
+
+        String[] commodityName = new String[]{
+                "black sunglasses ABC",
+                "ARG-GOLD34",
+                "WC-White2349",
+                "UP-23987",
+        };
+
+        // nameからメルアド作成
+//        for(int i=0; i< brandName.length ;i++ ){
+//            commodityName[i] = brandName[i];
+//        }
+
+        // ListViewのインスタンスを生成
+        ListView listView = findViewById(R.id.listView);
+
+        // BaseAdapter を継承したadapterのインスタンスを生成
+        // レイアウトファイル list_items.xml を
+        // activity_main.xml に inflate するためにadapterに引数として渡す
+        BaseAdapter ba = new TestAdapter(this.getApplicationContext(),
+                R.layout.list_items, brandName, commodityName, photos);
+
+        // ListViewにadapterをセット
+        listView.setAdapter(ba);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                ListView listView = (ListView) parent;
+                // クリックされたアイテムを取得します
+                String item = listView.getItemAtPosition(position).toString();
+
+                //Feedback
+                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
+                dl.setTitle(item);
+                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dl.show();
+
+                goToCamera();
             }
         });
     }

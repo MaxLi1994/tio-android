@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:background="#ddaa00" >
+            android:background="#bbbbbb" >
 
         <Spinner
             android:id="@+id/tool_bar_spinner"
