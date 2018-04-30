@@ -75,9 +75,9 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         int id = v.getId();
 
         if(id == R.id.buttonBlue) {
-            //set theme blue
+            //set theme bluebutton
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("theme", "blue");
+            editor.putString("theme", "bluebutton");
             editor.apply();
         } else {
             //set theme pink

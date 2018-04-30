@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".NavigationActivity"
-            android:label="Category"
+            android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LoginActivity"
@@ -28,9 +28,7 @@
         <activity
             android:name=".SettingActivity"
             android:label="Settings" />
-        <activity
-            android:name=".CategoryActivity"
-             />
+        <activity android:name=".CategoryActivity" />
         <activity
             android:name=".SettingActivity2"
             android:label="Settings" />
@@ -46,7 +44,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CameraActivity"></activity>
+        <activity android:name=".CameraActivity" />
+        <activity android:name=".FavoriteActivity"
+            android:label="Favorite" />
     </application>
 
 </manifest>

@@ -8,7 +8,18 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="400dp"
     tools:context=".CameraActivity">
-
+    <!--
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="#888"
+            android:horizontalSpacing="2dp"
+            android:verticalSpacing="2dp"
+            android:numColumns="2"
+            android:stretchMode="columnWidth" />
+    -->
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
@@ -18,10 +29,6 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:orientation="horizontal">
-
-
-
-
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="100dp"
@@ -49,7 +56,6 @@
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/watch" />
-
         </LinearLayout>
     </HorizontalScrollView>
 </RelativeLayout>

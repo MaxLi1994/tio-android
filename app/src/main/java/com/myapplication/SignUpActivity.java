@@ -85,6 +85,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         setup();
+        textView = findViewById(R.id.textView4);
+        textView.setVisibility(View.GONE);
     }
 
     public void setup(){
@@ -179,8 +181,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         */
 
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
-        setContentView(R.layout.activity_sign_up);
-        textView = findViewById(R.id.textView4);
+        //setContentView(R.layout.activity_sign_up);
+        //textView = findViewById(R.id.textView4);
 
         //HTTPリクエストを行う Queue を生成する
         RequestQueue mQueue = Volley.newRequestQueue(this);
@@ -208,7 +210,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                                 String nickname = data.getString("nickname");
                                 String account = data.getString("account");
                                 Integer id = data.getInt("id");
-                                textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
+                                //textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
 
                                 //Edit Login Info
                                 preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
@@ -230,7 +232,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                                 dl.show();
                             } else {
                                 String msg = json.getString("msg");
-                                textView.setText("code:" + resultCode + ", msg:" + msg);
+                                //textView.setText("code:" + resultCode + ", msg:" + msg);
 
                                 //User Feedback
                                 AlertDialog.Builder dl = new AlertDialog.Builder(SignUpActivity.this);

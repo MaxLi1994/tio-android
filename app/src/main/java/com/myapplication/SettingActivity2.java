@@ -52,6 +52,9 @@ public class SettingActivity2 extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        textView = findViewById(R.id.textView6);
+        textView.setVisibility(View.GONE);
     }
 
     private void attemptChangePassword() {
@@ -67,7 +70,7 @@ public class SettingActivity2 extends AppCompatActivity {
 
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
         setContentView(R.layout.activity_setting2);
-        textView = findViewById(R.id.textView6);
+        //textView = findViewById(R.id.textView6);
 
         //HTTPリクエストを行う Queue を生成する
         RequestQueue mQueue = Volley.newRequestQueue(this);
@@ -95,7 +98,7 @@ public class SettingActivity2 extends AppCompatActivity {
 
                                     if(resultCode.equals("0")){
                                         String msg = json.getString("data");
-                                        textView.setText("code:" + resultCode + ", msg:" + msg);
+                                        //textView.setText("code:" + resultCode + ", msg:" + msg);
 
                                         //User Feedback
                                         AlertDialog.Builder dl = new AlertDialog.Builder(SettingActivity2.this);
@@ -108,7 +111,7 @@ public class SettingActivity2 extends AppCompatActivity {
                                         dl.show();
                                     } else {
                                         String msg = json.getString("msg");
-                                        textView.setText("code:" + resultCode + ", msg:" + msg);
+                                        //textView.setText("code:" + resultCode + ", msg:" + msg);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

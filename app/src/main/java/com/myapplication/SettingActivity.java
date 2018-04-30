@@ -73,6 +73,9 @@ public class SettingActivity extends AppCompatActivity {
             mEmailView.setText(preferences.getString("account", "Tap to log in"));
             mNicknameView.setText(preferences.getString("nickname", ""));
         }
+
+        textView = findViewById(R.id.textView5);
+        textView.setVisibility(View.GONE);
     }
 
     private void forSetting2() {
@@ -94,7 +97,7 @@ public class SettingActivity extends AppCompatActivity {
 
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
         setContentView(R.layout.activity_setting);
-        textView = findViewById(R.id.textView5);
+        //textView = findViewById(R.id.textView5);
 
         //HTTPリクエストを行う Queue を生成する
         RequestQueue mQueue = Volley.newRequestQueue(this);
@@ -121,7 +124,7 @@ public class SettingActivity extends AppCompatActivity {
                                     String nickname = data.getString("nickname");
                                     String account = data.getString("account");
                                     Integer id = data.getInt("id");
-                                    textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
+                                    //textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
 
                                     //Edit Login Info
                                     preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
@@ -144,7 +147,7 @@ public class SettingActivity extends AppCompatActivity {
                                     dl.show();
                                 } else {
                                     String msg = json.getString("msg");
-                                    textView.setText("code:" + resultCode + ", msg:" + msg);
+                                    //textView.setText("code:" + resultCode + ", msg:" + msg);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();

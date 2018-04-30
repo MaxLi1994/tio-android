@@ -16,26 +16,24 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:background="#bbbbbb" >
-
-        <Spinner
-            android:id="@+id/tool_bar_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
-
+            android:background="#fff" >
+            <Spinner
+                android:id="@+id/tool_bar_spinner"
+                android:layout_width="150dp"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="50dp" />
+            <android.support.design.widget.CheckableImageButton
+                android:id="@+id/favorite"
+                android:background="@null"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="top|end"
+                android:layout_margin="10dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/favorite" />
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
-
     <include layout="@layout/content_navigation" />
-
-    <!--
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@android:drawable/ic_dialog_email" />
-    -->
 </android.support.design.widget.CoordinatorLayout>

@@ -89,6 +89,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setup();
+        textView = findViewById(R.id.textView3);
+        textView.setVisibility(View.GONE);
     }
 
     public void setup(){
@@ -190,8 +192,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         */
 
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
-        setContentView(R.layout.activity_login);
-        textView = findViewById(R.id.textView3);
+        //setContentView(R.layout.activity_login);
+        //textView = findViewById(R.id.textView3);
 
         //HTTPリクエストを行う Queue を生成する
         final RequestQueue mQueue = Volley.newRequestQueue(this);
@@ -218,7 +220,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 String account = data.getString("account");
                                 String nickname = data.getString("nickname");
                                 Integer id = data.getInt("id");
-                                textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
+                                //textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
 
                                 //Edit Login Info
                                 preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
@@ -240,7 +242,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 dl.show();
                             } else {
                                 msg = json.getString("msg");
-                                textView.setText("code:" + resultCode + ", msg:" + msg);
+                                //textView.setText("code:" + resultCode + ", msg:" + msg);
 
                                 //User Feedback
                                 AlertDialog.Builder dl = new AlertDialog.Builder(LoginActivity.this);
