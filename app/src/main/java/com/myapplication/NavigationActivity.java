@@ -51,6 +51,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NavigationActivity extends AppCompatActivity
@@ -92,9 +93,6 @@ public class NavigationActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        url_json = "http://18.219.212.60:8080/tio_backend/commodity/listAll";
-        getJsonObject(url_json);
-
         //Favorite Button
         favorite = findViewById(R.id.favorite);
         favorite.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +103,7 @@ public class NavigationActivity extends AppCompatActivity
         });
 
         //set category list on toolbar
-        categoryList = new String[] {"All Kinds", "Sunglasses", "Lipsticks", "Hats", "Watches"};
+        categoryList = new String[] {"All Kinds", "sunglass", "lipstick", "hat", "watch"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -116,6 +114,26 @@ public class NavigationActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 String selectedCategory = spinner.getSelectedItem().toString();
+
+                if(selectedCategory.equals("All Kinds")) {
+                    url_json = "http://18.219.212.60:8080/tio_backend/commodity/listAll";
+                    getJsonObject(url_json);
+                } else if(selectedCategory.equals("sunglass")) {
+                    url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
+                    getJsonObject(url_json);
+                } else if(selectedCategory.equals("lipstick")) {
+                    url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
+                    getJsonObject(url_json);
+                } else if(selectedCategory.equals("hat")) {
+                    url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
+                    getJsonObject(url_json);
+                } else if(selectedCategory.equals("watch")) {
+                    url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=lip_stick" + selectedCategory;
+                    getJsonObject(url_json);
+                } else {
+                    url_json = "http://18.219.212.60:8080/tio_backend/commodity/listAll";
+                    getJsonObject(url_json);
+                }
 
 //                if(selectedCategory.equals("All Kinds")){
 //                    // for-each brandNameをR.drawable.名前としてintに変換してarrayに登録
@@ -162,15 +180,15 @@ public class NavigationActivity extends AppCompatActivity
 //                    updateListView();
 //                }
 
-                //Feedback
-                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
-                dl.setTitle(selectedCategory);
-                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dl.show();
+//                //Feedback
+//                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
+//                dl.setTitle(selectedCategory);
+//                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dl.show();
             }
 
             @Override
@@ -292,6 +310,7 @@ public class NavigationActivity extends AppCompatActivity
 
                                         // GridViewのインスタンスを生成
                                         GridView gridview = findViewById(R.id.gridview);
+
                                         // BaseAdapter を継承したGridAdapterのインスタンスを生成
                                         // 子要素のレイアウトファイル grid_items.xml を
                                         // activity_main.xml に inflate するためにGridAdapterに引数として渡す
@@ -305,6 +324,7 @@ public class NavigationActivity extends AppCompatActivity
 
                                         // gridViewにadapterをセット
                                         gridview.setAdapter(adapter);
+
                                         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                 goToCamera(position);

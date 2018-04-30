@@ -90,7 +90,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         setup();
         textView = findViewById(R.id.textView3);
-        textView.setVisibility(View.GONE);
     }
 
     public void setup(){
@@ -199,7 +198,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final RequestQueue mQueue = Volley.newRequestQueue(this);
 
         //JSON用URL
-        url_json = "http://128.237.210.113:3000/user/login?" +
+        url_json = "http://18.219.212.60:8080/tio_backend/user/login?" +
                 "account=" + mEmailView.getText().toString() +
                 "&password=" + mPasswordView.getText().toString();
 

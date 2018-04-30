@@ -54,7 +54,6 @@ public class SettingActivity2 extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
 
         textView = findViewById(R.id.textView6);
-        textView.setVisibility(View.GONE);
     }
 
     private void attemptChangePassword() {
@@ -79,7 +78,7 @@ public class SettingActivity2 extends AppCompatActivity {
         int idToCheck = preferences.getInt("id",-1);
 
         //JSON用URL
-        String url_json = "http://128.237.210.113:3000/user/changePassword?" +
+        String url_json = "http://18.219.212.60:8080/tio_backend/user/changePassword?" +
                 "userId=" + idToCheck+
                 "&oldPassword=" + mEmailView.getText().toString() +
                 "&newPassword=" + mNicknameView.getText().toString();
@@ -106,12 +105,24 @@ public class SettingActivity2 extends AppCompatActivity {
                                         dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
+                                                SettingActivity2.this.finish();
                                             }
                                         });
                                         dl.show();
                                     } else {
                                         String msg = json.getString("msg");
                                         //textView.setText("code:" + resultCode + ", msg:" + msg);
+
+                                        //User Feedback
+                                        AlertDialog.Builder dl = new AlertDialog.Builder(SettingActivity2.this);
+                                            dl.setTitle("Error");
+                                            dl.setMessage(msg);
+                                            dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            }
+                                        });
+                                        dl.show();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

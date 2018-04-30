@@ -42,6 +42,8 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email_setting);
+        mEmailView.setEnabled(false);
+        mEmailView.setFocusable(false);
         //populateAutoComplete();
 
         mNicknameView = (EditText) findViewById(R.id.nickname_setting);
@@ -75,7 +77,6 @@ public class SettingActivity extends AppCompatActivity {
         }
 
         textView = findViewById(R.id.textView5);
-        textView.setVisibility(View.GONE);
     }
 
     private void forSetting2() {
@@ -103,7 +104,7 @@ public class SettingActivity extends AppCompatActivity {
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
         //JSON用URL
-        String url_json = "http://128.237.210.113:3000/user/changeNickname?" +
+        String url_json = "http://18.219.212.60:8080/tio_backend/user/changeNickname?" +
                 "userId=" + idToCheck +
                 "&newNickname=" + mNicknameView.getText().toString();
 
@@ -142,12 +143,24 @@ public class SettingActivity extends AppCompatActivity {
                                     dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
+                                            SettingActivity.this.finish();
                                         }
                                     });
                                     dl.show();
                                 } else {
                                     String msg = json.getString("msg");
                                     //textView.setText("code:" + resultCode + ", msg:" + msg);
+
+                                    //User Feedback
+                                    AlertDialog.Builder dl = new AlertDialog.Builder(SettingActivity.this);
+                                        dl.setTitle("Error");
+                                        dl.setMessage(msg);
+                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                            }
+                                    });
+                                    dl.show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();

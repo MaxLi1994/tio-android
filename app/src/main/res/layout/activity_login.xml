@@ -96,6 +96,7 @@
         android:layout_width="match_parent"
         android:layout_height="119dp"
         android:text="HTTP Response Here"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:visibility="invisible" />
 
 </LinearLayout>
