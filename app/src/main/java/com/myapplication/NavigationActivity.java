@@ -1,22 +1,11 @@
 package com.myapplication;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.AdaptiveIconDrawable;
-import android.media.Image;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.design.internal.NavigationMenuPresenter;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,16 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -51,7 +34,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class NavigationActivity extends AppCompatActivity
@@ -103,7 +85,7 @@ public class NavigationActivity extends AppCompatActivity
         });
 
         //set category list on toolbar
-        categoryList = new String[] {"All Kinds", "sunglass", "lipstick", "hat", "watch"};
+        categoryList = new String[] {"All Kinds", "sunglasses", "lipstick", "hat", "watch"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -118,7 +100,7 @@ public class NavigationActivity extends AppCompatActivity
                 if(selectedCategory.equals("All Kinds")) {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/listAll";
                     getJsonObject(url_json);
-                } else if(selectedCategory.equals("sunglass")) {
+                } else if(selectedCategory.equals("sunglasses")) {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
                     getJsonObject(url_json);
                 } else if(selectedCategory.equals("lipstick")) {
@@ -134,61 +116,6 @@ public class NavigationActivity extends AppCompatActivity
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/listAll";
                     getJsonObject(url_json);
                 }
-
-//                if(selectedCategory.equals("All Kinds")){
-//                    // for-each brandNameをR.drawable.名前としてintに変換してarrayに登録
-//                    for (String s: brandName){
-//                        int imageId = getResources().getIdentifier(
-//                                s,"drawable", getPackageName());
-//                        imgList.add(imageId);
-//                    }
-//
-//                    // GridViewのインスタンスを生成
-//                    GridView gridview = findViewById(R.id.gridview);
-//                    // BaseAdapter を継承したGridAdapterのインスタンスを生成
-//                    // 子要素のレイアウトファイル grid_items.xml を
-//                    // activity_main.xml に inflate するためにGridAdapterに引数として渡す
-//                    GridAdapter adapter = new GridAdapter(NavigationActivity.this,
-//                            R.layout.grid_items,
-//                            imgList,
-//                            brandName,
-//                            commodityName
-//                    );
-//
-//                    // gridViewにadapterをセット
-//                    gridview.setAdapter(adapter);
-//
-//                } else if(selectedCategory.equals("Sunglasses")) {
-//                    brandName = new String[]{"GUCCI"};
-//                    photos = new int[]{R.drawable.glass};
-//                    commodityName = new String[]{"black sunglasses ABC"};
-//                    updateListView();
-//                } else if(selectedCategory.equals("Lipsticks")){
-//                    brandName = new String[]{"RAY BAN","CHANEL"};
-//                    photos = new int[]{R.drawable.lip,R.drawable.watch};
-//                    commodityName = new String[]{"WC-White2349","UP-23987"};
-//                    updateListView();
-//                } else if(selectedCategory.equals("Hats")) {
-//                    brandName = new String[]{"LOUIS VUITTON"};
-//                    photos = new int[]{R.drawable.hat};
-//                    commodityName = new String[]{"ARG-GOLD34"};
-//                    updateListView();
-//                } else if(selectedCategory.equals("Watches")){
-//                    brandName = new String[]{"CHANEL"};
-//                    photos = new int[]{R.drawable.watch};
-//                    commodityName = new String[]{"UP-23987"};
-//                    updateListView();
-//                }
-
-//                //Feedback
-//                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
-//                dl.setTitle(selectedCategory);
-//                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                dl.show();
             }
 
             @Override
@@ -205,6 +132,7 @@ public class NavigationActivity extends AppCompatActivity
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.home);
 
         //Read Login Info
         preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
@@ -252,11 +180,6 @@ public class NavigationActivity extends AppCompatActivity
                 }
             }
         });
-
-        // nameからメルアド作成
-//        for(int i=0; i< brandName.length ;i++ ){
-//            commodityName[i] = brandName[i];
-//        }
     }
 
     public void getJsonObject(String destination) {
@@ -277,10 +200,19 @@ public class NavigationActivity extends AppCompatActivity
                                     resultCode = json.getString("code");
 
                                     if(resultCode.equals("0")){
+                                        // GridViewのインスタンスを生成
+                                        GridView gridview = findViewById(R.id.gridview);
+
                                         JSONArray array = json.getJSONArray("data");
                                         int count = array.length();
                                         JSONObject[] commodities = new JSONObject[count];
 
+                                        if(commodityName.size() > 0) {
+                                            commodityName.clear();
+                                            brandName.clear();
+                                            imageURLs.clear();
+                                            imgList.clear();
+                                        }
                                         for (int i=0; i<count; i++){
                                             commodities[i] = array.getJSONObject(i);
                                         }
@@ -308,9 +240,6 @@ public class NavigationActivity extends AppCompatActivity
                                             imgList.add(imageId);
                                         }
 
-                                        // GridViewのインスタンスを生成
-                                        GridView gridview = findViewById(R.id.gridview);
-
                                         // BaseAdapter を継承したGridAdapterのインスタンスを生成
                                         // 子要素のレイアウトファイル grid_items.xml を
                                         // activity_main.xml に inflate するためにGridAdapterに引数として渡す
@@ -322,33 +251,18 @@ public class NavigationActivity extends AppCompatActivity
                                                 imageURLs
                                         );
 
+                                        adapter.notifyDataSetChanged();
+
                                         // gridViewにadapterをセット
                                         gridview.setAdapter(adapter);
+                                        gridview.invalidateViews();
 
                                         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                goToCamera(position);
+                                                goToCamera();
                                             }
                                         });
 
-//                                        //User Feedback
-//                                        AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
-//                                        dl.setTitle("code:" + resultCode);
-//                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                            public void onClick(DialogInterface dialog, int which) {
-//                                                dialog.dismiss();
-//                                                NavigationActivity.this.finish();//カテゴリ画面へ戻る
-//                                            }
-//                                        });
-//                                        dl.show();
-                                        /*
-                                        preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = preferences.edit();
-                                        editor.putInt("id", id);
-                                        editor.putString("account", account);
-                                        editor.putString("nickname", nickname);
-                                        editor.apply();
-                                        */
                                     } else {
                                         msg = json.getString("msg");
                                         //User Feedback
@@ -390,6 +304,7 @@ public class NavigationActivity extends AppCompatActivity
 
         //Display Login Info
         navigationView = findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.home);
         header = navigationView.getHeaderView(0);
         nicknameField = header.findViewById(R.id.nickname1);
         nicknameField.setText(nicknameGlobal);
@@ -397,54 +312,15 @@ public class NavigationActivity extends AppCompatActivity
         accountField.setText(accountGlobal);
     }
 
-//    public void updateListView(){
-//
-//        // ListViewのインスタンスを生成
-//        ListView listView = findViewById(R.id.listView);
-//
-//        // BaseAdapter を継承したadapterのインスタンスを生成
-//        // レイアウトファイル list_items.xml を
-//        // activity_main.xml に inflate するためにadapterに引数として渡す
-//        BaseAdapter ba = new TestAdapter(this.getApplicationContext(),
-//                R.layout.list_items, brandName, commodityName, photos);
-//
-//        // ListViewにadapterをセット
-//        listView.setAdapter(ba);
-//
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//
-//                ListView listView = (ListView) parent;
-//                // クリックされたアイテムを取得します
-//                String item = listView.getItemAtPosition(position).toString();
-//
-//                //Feedback
-//                AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
-//                dl.setTitle(item);
-//                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                dl.show();
-//
-//                goToCamera();
-//            }
-//        });
-//    }
-
     public void goToFavorite(){
         NavigationActivity.this.onPause();
         Intent intent = new Intent(this, FavoriteActivity.class);
         startActivity(intent);
     }
 
-    public void goToCamera(int p){
+    public void goToCamera(){
         NavigationActivity.this.onPause();
         Intent intent = new Intent(this, CameraActivity.class);
-        intent.putExtra("id", imgList.get(p));//IDを渡す
         startActivity(intent);
     }
 
@@ -475,32 +351,30 @@ public class NavigationActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("test1")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                    // ボタンをクリックしたときの動作をここに書く
-                        }
-                    });
-            builder.show();
-        } else if (id == R.id.nav_gallery) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("test2")
-                    .setPositiveButton("sure", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // ボタンをクリックしたときの動作をここに書く
-                        }
-                    });
-            builder.show();
-        } else if (id == R.id.nav_share) {
-            logout();
+        if (id == R.id.home) {
+
+        } else if (id == R.id.privacy) {
+            NavigationActivity.this.onPause();
+            Intent intent = new Intent(this, PrivacyActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.logout) {
+            if (preferences.getInt("id", -1) != -1) {
+                logout();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("You have already logged out.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // ボタンをクリックしたときの動作をここに書く
+                            }
+                        });
+                builder.show();
+            }
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

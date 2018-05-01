@@ -41,7 +41,7 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email_setting);
+        mEmailView = findViewById(R.id.email_setting);
         mEmailView.setEnabled(false);
         mEmailView.setFocusable(false);
         //populateAutoComplete();
@@ -86,18 +86,8 @@ public class SettingActivity extends AppCompatActivity {
 
 
     private void attemptChangeNickname() {
-        //デバッグ用
-        /*
-        AlertDialog.Builder dl = new AlertDialog.Builder(this);
-        dl.setTitle("Test");
-        dl.setMessage("email: " + mEmailView.getText().toString()
-                + "\nnickname: " + mNicknameView.getText().toString());
-        dl.setPositiveButton("OK", null); //ボタン
-        dl.show();
-        */
-
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
-        setContentView(R.layout.activity_setting);
+        //setContentView(R.layout.activity_setting);
         //textView = findViewById(R.id.textView5);
 
         //HTTPリクエストを行う Queue を生成する

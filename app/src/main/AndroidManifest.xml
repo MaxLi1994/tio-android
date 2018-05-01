@@ -45,8 +45,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".CameraActivity" />
-        <activity android:name=".FavoriteActivity"
+        <activity
+            android:name=".FavoriteActivity"
             android:label="Favorite" />
+        <activity
+            android:name=".PrivacyActivity"
+            android:label="Privacy Policy"
+            />
     </application>
 
 </manifest>

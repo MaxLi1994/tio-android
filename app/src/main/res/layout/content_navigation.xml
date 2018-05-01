@@ -18,13 +18,4 @@
         android:numColumns="2"
         android:stretchMode="columnWidth"
         />
-
-    <!--縦リスト表示
-    <ListView
-        android:id="@+id/listView"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    -->
 </android.support.constraint.ConstraintLayout>

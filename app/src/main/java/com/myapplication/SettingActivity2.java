@@ -57,18 +57,8 @@ public class SettingActivity2 extends AppCompatActivity {
     }
 
     private void attemptChangePassword() {
-        //デバッグ用
-        /*
-        AlertDialog.Builder dl = new AlertDialog.Builder(this);
-        dl.setTitle("Test");
-        dl.setMessage("old: " + mEmailView.getText().toString()
-                + "\nnew: " + mNicknameView.getText().toString());
-        dl.setPositiveButton("OK", null); //ボタン
-        dl.show();
-        */
-
         //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
-        setContentView(R.layout.activity_setting2);
+        //setContentView(R.layout.activity_setting2);
         //textView = findViewById(R.id.textView6);
 
         //HTTPリクエストを行う Queue を生成する

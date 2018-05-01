@@ -36,11 +36,5 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-
-        Intent intent = getIntent();
-        int imageId = intent.getIntExtra("IMAGEID", 0);
-
-        ImageView i = findViewById(R.id.imageView);
-        i.setImageResource(imageId);
     }
 }

@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FavoriteActivity">
+    tools:context=".PrivacyActivity">
 
-<ListView
-    android:id="@+id/listFavorite"
-    android:divider="@android:color/transparent"
-    android:dividerHeight="4dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/privacyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="TextView"
+        android:textSize="18sp" />
 </android.support.constraint.ConstraintLayout>

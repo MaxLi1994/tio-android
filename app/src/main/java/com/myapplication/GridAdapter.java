@@ -68,16 +68,16 @@ public class GridAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-//        try {
+        try {
             holder.imageView.setImageResource(imageList.get(position));
             holder.textView.setText(brandNames.get(position));
             holder.textView2.setText(commodityNames.get(position));
 
             //Add Image from URL
             addUrlImage(url.get(position), convertView);
-//        } catch (Exception e) {
-//
-//        }
+        } catch (Exception e) {
+
+        }
 
         //read color info
         SharedPreferences preferences;
