@@ -85,7 +85,7 @@ public class NavigationActivity extends AppCompatActivity
         });
 
         //set category list on toolbar
-        categoryList = new String[] {"All Kinds", "sunglasses", "lipstick", "hat", "watch"};
+        categoryList = new String[] {"All Kinds", "sunglasses", "lipstick"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -105,12 +105,6 @@ public class NavigationActivity extends AppCompatActivity
                     getJsonObject(url_json);
                 } else if(selectedCategory.equals("lipstick")) {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
-                    getJsonObject(url_json);
-                } else if(selectedCategory.equals("hat")) {
-                    url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
-                    getJsonObject(url_json);
-                } else if(selectedCategory.equals("watch")) {
-                    url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=lip_stick" + selectedCategory;
                     getJsonObject(url_json);
                 } else {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/listAll";
