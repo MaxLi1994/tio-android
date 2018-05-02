@@ -1,5 +1,7 @@
 package com.myapplication;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,10 +10,18 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.LayoutRes;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,12 +36,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.myapplication.graphic.ModelLoader;
+import com.myapplication.graphic.ModelTuple;
+import com.myapplication.vision.CameraController;
+
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -43,6 +58,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CameraActivity extends AppCompatActivity {
@@ -69,6 +85,10 @@ public class CameraActivity extends AppCompatActivity {
     private ImageView fab;
     private boolean favorited = false;
 
+    private CameraController cameraController;
+    private List<ModelTuple> modelTupleList;
+
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,6 +150,22 @@ public class CameraActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        // Check for the camera permission before accessing the camera.  If the
+        // permission is not granted yet, request permission.
+        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        if (rc == PackageManager.PERMISSION_GRANTED) {
+            cameraController.createCameraSource();
+        } else {
+            cameraController.requestCameraPermission();
+        }
+
+
+        int[] glassesID = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
+        CameraController.GRAPHIC_TYPE[] types = new CameraController.GRAPHIC_TYPE[glassesID.length];
+        Arrays.fill(types, CameraController.GRAPHIC_TYPE.GLASSES);
+        modelTupleList = ModelLoader.loadModels(this.getApplicationContext(), types, Arrays.stream(glassesID).mapToObj(i -> "https://s3.us-east-2.amazonaws.com/ibed/g/" + i + ".png").toArray(String[]::new));
 
     }
 
@@ -488,5 +524,35 @@ public class CameraActivity extends AppCompatActivity {
                         }
                 );
         mQueue.add(jsonObjectRequest);
+        cameraController = new CameraController(this);
+
+    }
+
+    /**
+     * Restarts the camera.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cameraController.startCameraSource();
+    }
+
+    /**
+     * Stops the camera.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cameraController.pause();
+    }
+
+    /**
+     * Releases the resources associated with the camera source, the associated detector, and the
+     * rest of the processing pipeline.
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cameraController.destroy();
     }
 }

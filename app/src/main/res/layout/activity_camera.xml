@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".CameraActivity">
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/topLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="0dp"
+        android:keepScreenOn="true">
+
+        <com.myapplication.graphic.CameraSourcePreview
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.myapplication.graphic.GraphicOverlay
+                android:id="@+id/faceOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.myapplication.graphic.CameraSourcePreview>
+
+    </LinearLayout>
 
     <GridView
         android:id="@+id/browselist"
@@ -44,5 +63,5 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:scaleType="fitCenter" />
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>
 
