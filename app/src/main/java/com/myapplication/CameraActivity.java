@@ -1,8 +1,10 @@
 package com.myapplication;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.LayoutRes;
@@ -45,8 +47,9 @@ import java.util.List;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private int commodityID;
-    private String url_json_commodity, url_json_category, urlForImage, resultCode, msg, categoryName;
+    private int commodityID, userID;
+    private String url_json_commodity, url_json_category, urlForImage, resultCode, msg, categoryName, url_json_favorite;
+    private String changeFavoritedURL, res;
 
     private List<String> brandName = new ArrayList<>();
     private List<String> commodityName = new ArrayList<>();
@@ -62,6 +65,9 @@ public class CameraActivity extends AppCompatActivity {
     private Integer cid = 0;
 
     private Button moreInfoButton;
+
+    private ImageView fab;
+    private boolean favorited = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +89,36 @@ public class CameraActivity extends AppCompatActivity {
             getJsonObjectList(url_json_category);
         }
 
+        //Read Login Info
+        SharedPreferences preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        userID = preferences.getInt("id", -1);
+
+        checkFavorite(commodityID, userID);
+
+        //Favorite Button
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //If not logged in
+                if(userID == -1){
+                    //User Feedback
+                    AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
+                    dl.setTitle("Please login to use this feature.");
+                    dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dl.show();
+                } else {
+                    //If logged in
+                    updateFavorite(commodityID, userID);
+                }
+            }
+        });
+
+        //More Info Button
         moreInfoButton = findViewById(R.id.moreInfoButton);
         moreInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +141,7 @@ public class CameraActivity extends AppCompatActivity {
         String s = destination;
 
         //JSONでGET
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, s,
                         new Response.Listener<JSONObject>() {
                             @Override
@@ -117,12 +153,21 @@ public class CameraActivity extends AppCompatActivity {
                                     if(resultCode.equals("0")){
                                         JSONObject data = json.getJSONObject("data");
                                         String iURL = data.getString("desc_img");
-                                        String id = data.getString("id");
+                                        int id = data.getInt("id");
 
                                         urlForImage = iURL;
                                         ImageView iv = findViewById(R.id.tioCommodity);
                                         System.out.println(urlForImage);
                                         addUrlImage(urlForImage, iv);
+
+                                        checkFavorite(id, userID);
+                                        if(favorited){
+                                            ImageView v = findViewById(R.id.fab);
+                                            v.setImageResource(R.drawable.favorite);
+                                        } else {
+                                            ImageView v = findViewById(R.id.fab);
+                                            v.setImageResource(R.drawable.blue);
+                                        }
 
                                     } else {
                                         msg = json.getString("msg");
@@ -160,7 +205,7 @@ public class CameraActivity extends AppCompatActivity {
         String s = destination;
 
         //JSONでGET
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, s,
                         new Response.Listener<JSONObject>() {
                             @Override
@@ -277,5 +322,171 @@ public class CameraActivity extends AppCompatActivity {
         Picasso.with(CameraActivity.this)
                 .load(url)
                 .into(img);
+    }
+
+    private void checkFavorite(int commodityID, int userID){
+        //HTTPリクエストを行う Queue を生成する
+        RequestQueue mQueue = Volley.newRequestQueue(this);
+
+        //JSON用URL
+        String s = "http://18.219.212.60:8080/tio_backend/commodity/checkIsFavorite?commodityId=" + commodityID + "&userId=" + userID;
+
+        //JSONでGET
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, s,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    JSONObject json = new JSONObject(response.toString());
+                                    resultCode = json.getString("code");
+
+                                    if(resultCode.equals("0")){
+                                        JSONObject data = json.getJSONObject("data");
+                                        favorited = data.getBoolean("favorited");
+
+                                        if(favorited){
+                                            ImageView v = findViewById(R.id.fab);
+                                            v.setImageResource(R.drawable.favorite);
+                                        } else {
+                                            ImageView v = findViewById(R.id.fab);
+                                            v.setImageResource(R.drawable.blue);
+                                        }
+
+                                    } else {
+                                        msg = json.getString("msg");
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO: Handle error here
+                            }
+                        }
+                );
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private void updateFavorite(int commodityID, int userID){
+        //HTTPリクエストを行う Queue を生成する
+        RequestQueue mQueue = Volley.newRequestQueue(this);
+
+        //JSON用URL
+        String s = "http://18.219.212.60:8080/tio_backend/commodity/checkIsFavorite?commodityId=" + commodityID + "&userId=" + userID;
+
+        //JSONでGET
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, s,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    JSONObject json = new JSONObject(response.toString());
+                                    resultCode = json.getString("code");
+
+                                    if(resultCode.equals("0")){
+                                        JSONObject data = json.getJSONObject("data");
+                                        favorited = data.getBoolean("favorited");
+
+                                        if(favorited){
+                                            ImageView v = findViewById(R.id.fab);
+                                            v.setImageResource(R.drawable.blue);
+                                        } else {
+                                            ImageView v = findViewById(R.id.fab);
+                                            v.setImageResource(R.drawable.favorite);
+                                        }
+
+                                        changeFavorited(favorited);
+                                    } else {
+                                        msg = json.getString("msg");
+                                        //User Feedback
+                                        AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
+                                        dl.setTitle("code:" + resultCode + ", msg:" + msg);
+                                        dl.setMessage(msg);
+                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                        dl.show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO: Handle error here
+                            }
+                        }
+                );
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private void changeFavorited(boolean isFavorited){
+        //If favorited
+        if(isFavorited) {
+            changeFavoritedURL = "http://18.219.212.60:8080/tio_backend/commodity/delFavorite?commodityId=" + commodityID + "&userId=" + userID;
+        }
+        //If not favorited
+        else {
+            changeFavoritedURL = "http://18.219.212.60:8080/tio_backend/commodity/addFavorite?commodityId=" + commodityID + "&userId=" + userID;
+        }
+
+        //HTTPリクエストを行う Queue を生成する
+        RequestQueue mQueue = Volley.newRequestQueue(this);
+
+        //JSONでGET
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, changeFavoritedURL,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    JSONObject json = new JSONObject(response.toString());
+                                    resultCode = json.getString("code");
+                                    if(resultCode.equals("0")){
+                                        JSONObject data = json.getJSONObject("data");
+                                        res = data.getString("msg");
+                                    } else {
+                                        res = json.getString("msg");
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if(favorited){
+                                    ImageView v = findViewById(R.id.fab);
+                                    v.setImageResource(R.drawable.blue);
+                                } else {
+                                    ImageView v = findViewById(R.id.fab);
+                                    v.setImageResource(R.drawable.favorite);
+                                }
+
+                                //User Feedback
+                                AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
+                                dl.setTitle(res);
+                                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                dl.show();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO: Handle error here
+                            }
+                        }
+                );
+        mQueue.add(jsonObjectRequest);
     }
 }

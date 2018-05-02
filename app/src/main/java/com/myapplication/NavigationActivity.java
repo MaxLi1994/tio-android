@@ -257,15 +257,7 @@ public class NavigationActivity extends AppCompatActivity
 
                                         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                //goToCamera();
-
-                                                NavigationActivity.this.onPause();
-                                                Intent intent = new Intent(getApplication(), CameraActivity.class);
-
-                                                intent.putExtra("commodityID", idList.get(position));
-                                                intent.putExtra("categoryName", selectedCategory);
-
-                                                startActivity(intent);
+                                                goToCamera(position);
                                             }
                                         });
 
@@ -319,17 +311,30 @@ public class NavigationActivity extends AppCompatActivity
     }
 
     public void goToFavorite(){
-        NavigationActivity.this.onPause();
-        Intent intent = new Intent(this, FavoriteActivity.class);
-        startActivity(intent);
+        if(idGlobal == -1){
+            //User Feedback
+            AlertDialog.Builder dl = new AlertDialog.Builder(NavigationActivity.this);
+            dl.setTitle("Please login to use this feature.");
+            dl.setMessage(msg);
+            dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dl.show();
+        } else {
+            NavigationActivity.this.onPause();
+            Intent intent = new Intent(this, FavoriteActivity.class);
+            startActivity(intent);
+        }
     }
 
-    public void goToCamera(){
+    public void goToCamera(int p){
         NavigationActivity.this.onPause();
-        Intent intent = new Intent(this, CameraActivity.class);
+        Intent intent = new Intent(getApplication(), CameraActivity.class);
 
-
-        //intent.putExtra("commodityID", );
+        intent.putExtra("commodityID", idList.get(p));
+        intent.putExtra("categoryName", selectedCategory);
 
         startActivity(intent);
     }

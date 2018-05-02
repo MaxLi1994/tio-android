@@ -43,7 +43,7 @@ public class TestAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+/*
         ViewHolder holder;
 
         if (convertView == null) {
@@ -67,7 +67,7 @@ public class TestAdapter extends BaseAdapter {
         holder.email.setText(str);
 
         holder.text.setText(namelist[position]);
-
+*/
         return convertView;
     }
 
