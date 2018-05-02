@@ -58,10 +58,12 @@ public class NavigationActivity extends AppCompatActivity
     private String url_json;
     private String resultCode;
     private String msg;
+    private String selectedCategory;
 
     private List<String> brandName = new ArrayList<>();
     private List<String> commodityName = new ArrayList<>();
     private List<String> imageURLs = new ArrayList<>();
+    private List<Integer> idList = new ArrayList<>();
 
     // Resource IDを格納するarray
     private List<Integer> imgList = new ArrayList<>();
@@ -95,20 +97,20 @@ public class NavigationActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                String selectedCategory = spinner.getSelectedItem().toString();
+                selectedCategory = spinner.getSelectedItem().toString();
 
                 if(selectedCategory.equals("All Kinds")) {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/listAll";
-                    getJsonObject(url_json);
+                    getJsonObjectList(url_json);
                 } else if(selectedCategory.equals("sunglasses")) {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
-                    getJsonObject(url_json);
+                    getJsonObjectList(url_json);
                 } else if(selectedCategory.equals("lipstick")) {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
-                    getJsonObject(url_json);
+                    getJsonObjectList(url_json);
                 } else {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/listAll";
-                    getJsonObject(url_json);
+                    getJsonObjectList(url_json);
                 }
             }
 
@@ -176,7 +178,7 @@ public class NavigationActivity extends AppCompatActivity
         });
     }
 
-    public void getJsonObject(String destination) {
+    public void getJsonObjectList(String destination) {
         //HTTPリクエストを行う Queue を生成する
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
@@ -206,6 +208,7 @@ public class NavigationActivity extends AppCompatActivity
                                             brandName.clear();
                                             imageURLs.clear();
                                             imgList.clear();
+                                            idList.clear();
                                         }
                                         for (int i=0; i<count; i++){
                                             commodities[i] = array.getJSONObject(i);
@@ -219,15 +222,16 @@ public class NavigationActivity extends AppCompatActivity
                                         for (int i=0; i<count; i++){
                                             cName = commodities[i].getString("commodity_name");
                                             bName = commodities[i].getString("brand_name");
-                                            iURL = commodities[i].getString("brand_logo");
+                                            iURL = commodities[i].getString("commodity_desc_img");
                                             id = commodities[i].getInt("commodity_id");
 
                                             commodityName.add(cName);
                                             brandName.add(bName);
                                             imageURLs.add(iURL);
+                                            idList.add(id);
                                         }
 
-                                        // for-each brandNameをR.drawable.名前としてintに変換してarrayに登録
+                                        // for-each commodityNameをR.drawable.名前としてintに変換してarrayに登録
                                         for (String s: commodityName){
                                             int imageId = getResources().getIdentifier(
                                                     s,"drawable", getPackageName());
@@ -253,7 +257,15 @@ public class NavigationActivity extends AppCompatActivity
 
                                         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                goToCamera();
+                                                //goToCamera();
+
+                                                NavigationActivity.this.onPause();
+                                                Intent intent = new Intent(getApplication(), CameraActivity.class);
+
+                                                intent.putExtra("commodityID", idList.get(position));
+                                                intent.putExtra("categoryName", selectedCategory);
+
+                                                startActivity(intent);
                                             }
                                         });
 
@@ -315,6 +327,10 @@ public class NavigationActivity extends AppCompatActivity
     public void goToCamera(){
         NavigationActivity.this.onPause();
         Intent intent = new Intent(this, CameraActivity.class);
+
+
+        //intent.putExtra("commodityID", );
+
         startActivity(intent);
     }
 
