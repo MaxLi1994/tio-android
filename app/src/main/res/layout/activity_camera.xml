@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".NavigationActivity">
-    <!--
-        <GridView
-            android:id="@+id/gridview"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/topLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="0dp"
+        android:keepScreenOn="true">
+
+        <com.myapplication.graphic.CameraSourcePreview
+            android:id="@+id/preview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:background="#888"
-            android:horizontalSpacing="2dp"
-            android:verticalSpacing="2dp"
-            android:numColumns="2"
-            android:stretchMode="columnWidth" />
-    -->
+            android:layout_height="match_parent">
+
+            <com.myapplication.graphic.GraphicOverlay
+                android:id="@+id/faceOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.myapplication.graphic.CameraSourcePreview>
+
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/verticalScrollView"
         android:layout_width="105dp"
@@ -98,5 +106,16 @@
         android:layout_marginTop="450dp"
         android:text="More Info" />
 
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>
+<!--<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--tools:context=".NavigationActivity">-->
+
+
+    <!---->
+
+<!--</android.support.design.widget.CoordinatorLayout>-->
 
