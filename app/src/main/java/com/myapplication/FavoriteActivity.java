@@ -29,10 +29,10 @@ import java.util.List;
 
 public class FavoriteActivity extends AppCompatActivity {
 
-    private int userID;
+    private int userID, commodityID;
     private String url, resultCode, msg;
 
-    private List<String> brandName = new ArrayList<>();
+    private List<Integer> favoriteList = new ArrayList<>();
     private List<String> commodityName = new ArrayList<>();
     private List<String> imageURLs = new ArrayList<>();
 
@@ -86,9 +86,11 @@ public class FavoriteActivity extends AppCompatActivity {
                                         for (int i=0; i<count; i++){
                                             cName = commodities[i].getString("name");
                                             iURL = commodities[i].getString("desc_img");
+                                            commodityID = commodities[i].getInt("id");
 
                                             commodityName.add(cName);
                                             imageURLs.add(iURL);
+                                            favoriteList.add(commodityID);
                                         }
 
                                         // for-each commodityNameをR.drawable.名前としてintに変換してarrayに登録
@@ -118,7 +120,7 @@ public class FavoriteActivity extends AppCompatActivity {
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                 Intent intent = new Intent(getApplication(), DetailActivity.class);
 
-                                                intent.putExtra("commodityID", position+1);
+                                                intent.putExtra("commodityID", favoriteList.get(position));
 
                                                 startActivity(intent);
                                             }
