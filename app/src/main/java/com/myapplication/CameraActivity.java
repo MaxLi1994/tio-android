@@ -165,17 +165,6 @@ public class CameraActivity extends AppCompatActivity {
             cameraController.requestCameraPermission();
         }
 
-
-        // -----------
-        // example
-        int[] glassesID = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
-        CameraController.GRAPHIC_TYPE[] types = new CameraController.GRAPHIC_TYPE[glassesID.length];
-        Arrays.fill(types, CameraController.GRAPHIC_TYPE.GLASSES);
-        modelTupleList = ModelLoader.loadModels(this.getApplicationContext(), types, Arrays.stream(glassesID).mapToObj(i -> "https://s3.us-east-2.amazonaws.com/ibed/g/" + i + ".png").toArray(String[]::new));
-        ModelTuple tuple = modelTupleList.get(0);
-        cameraController.showModel(tuple.type, tuple.model);
-        // -----------
-
     }
 
     public void getJsonObject(String destination) {
