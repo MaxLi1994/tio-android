@@ -11,14 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/blue" />
+        app:srcCompat="@color/blue" />
 
     <ImageView
         android:id="@+id/pinkBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/pink" />
+        app:srcCompat="@color/pink" />
 
     <Button
         android:id="@+id/buttonBlue"
@@ -112,6 +112,5 @@
         android:layout_marginBottom="75dp"
         android:text="Which color do you prefer?"
         android:textColor="@android:color/background_light"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textSize="24sp" />
 </RelativeLayout>

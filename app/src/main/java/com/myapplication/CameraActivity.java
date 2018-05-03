@@ -538,15 +538,15 @@ public class CameraActivity extends AppCompatActivity {
                                 v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
                             }
 
-                            //User Feedback
-                            AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
-                            dl.setTitle(res);
-                            dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            dl.show();
+//                            //User Feedback
+//                            AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
+//                            dl.setTitle(res);
+//                            dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                            dl.show();
                         },
                         error -> {
                             // TODO: Handle error here
