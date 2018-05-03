@@ -177,77 +177,71 @@ public class CameraActivity extends AppCompatActivity {
         //JSONでGET
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, s,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    JSONObject json = new JSONObject(response.toString());
-                                    resultCode = json.getString("code");
+                        response -> {
+                            try {
+                                JSONObject json = new JSONObject(response.toString());
+                                resultCode = json.getString("code");
 
-                                    if(resultCode.equals("0")){
-                                        JSONObject data = json.getJSONObject("data");
-                                        String iURL = data.getString("model_url");
-                                        int id = data.getInt("id");
-                                        int categoryId = data.getInt("category_id");
+                                if(resultCode.equals("0")){
+                                    JSONObject data = json.getJSONObject("data");
+                                    String iURL = data.getString("model_url");
+                                    int id = data.getInt("id");
+                                    int categoryId = data.getInt("category_id");
 
 //                                        urlForImage = iURL;
 //                                        ImageView iv = findViewById(R.id.tioCommodity);
 //                                        System.out.println(urlForImage);
 //                                        addUrlImage(urlForImage, iv);
-                                        Model2D model = new Model2D(CameraActivity.this.getApplicationContext(), iURL);
-                                        model.load();
-                                        CameraController.GRAPHIC_TYPE type = null;
-                                        switch (categoryId) {
-                                            case 1: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
-                                            case 2: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
-                                            case 3: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
-                                            case 4: type = CameraController.GRAPHIC_TYPE.BLUSHER;break;
-                                        }
+                                    Model2D model = new Model2D(CameraActivity.this.getApplicationContext(), iURL);
+                                    model.load();
+                                    CameraController.GRAPHIC_TYPE type = null;
+                                    switch (categoryId) {
+                                        case 1: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
+                                        case 2: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
+                                        case 3: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
+                                        case 4: type = CameraController.GRAPHIC_TYPE.BLUSHER;break;
+                                    }
 
-                                        cameraController.showModel(type, model);
+                                    cameraController.showModel(type, model);
 
-                                        checkFavorite(id, userID);
+                                    checkFavorite(id, userID);
 
-                                        //read color info
-                                        SharedPreferences preferences;
-                                        preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
-                                        String color = preferences.getString("theme", "bluebutton");
-                                        if(favorited){
-                                            if (color.equals("bluebutton")) {
-                                                ImageView v = findViewById(R.id.fab);
-                                                v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
-                                            } else {
-                                                ImageView v = findViewById(R.id.fab);
-                                                v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
-                                            }
+                                    //read color info
+                                    SharedPreferences preferences;
+                                    preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                    String color = preferences.getString("theme", "bluebutton");
+                                    if(favorited){
+                                        if (color.equals("bluebutton")) {
+                                            ImageView v = findViewById(R.id.fab);
+                                            v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
                                         } else {
                                             ImageView v = findViewById(R.id.fab);
-                                            v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
+                                            v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
                                         }
-
                                     } else {
-                                        msg = json.getString("msg");
-                                        //User Feedback
-                                        AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
-                                        dl.setTitle("code:" + resultCode + ", msg:" + msg);
-                                        dl.setMessage(msg);
-                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                        dl.show();
+                                        ImageView v = findViewById(R.id.fab);
+                                        v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+
+                                } else {
+                                    msg = json.getString("msg");
+                                    //User Feedback
+                                    AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
+                                    dl.setTitle("code:" + resultCode + ", msg:" + msg);
+                                    dl.setMessage(msg);
+                                    dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    dl.show();
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error here
-                            }
+                        error -> {
+                            // TODO: Handle error here
                         }
                 );
         mQueue.add(jsonObjectRequest);
@@ -263,70 +257,68 @@ public class CameraActivity extends AppCompatActivity {
         //JSONでGET
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, s,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    JSONObject json = new JSONObject(response.toString());
-                                    resultCode = json.getString("code");
+                        response -> {
+                            try {
+                                JSONObject json = new JSONObject(response.toString());
+                                resultCode = json.getString("code");
 
-                                    if(resultCode.equals("0")){
-                                        // GridViewのインスタンスを生成
-                                        GridView gridview = findViewById(R.id.browselist);
+                                if(resultCode.equals("0")){
+                                    // GridViewのインスタンスを生成
+                                    GridView gridview = findViewById(R.id.browselist);
 
-                                        JSONArray array = json.getJSONArray("data");
-                                        int count = array.length();
-                                        final JSONObject[] commodities = new JSONObject[count];
+                                    JSONArray array = json.getJSONArray("data");
+                                    int count = array.length();
+                                    final JSONObject[] commodities = new JSONObject[count];
 
-                                        if(commodityName.size() > 0) {
-                                            commodityName.clear();
-                                            brandName.clear();
-                                            imageURLs.clear();
-                                            imgList.clear();
-                                            idList.clear();
-                                        }
-                                        for (int i=0; i<count; i++){
-                                            commodities[i] = array.getJSONObject(i);
-                                        }
+                                    if(commodityName.size() > 0) {
+                                        commodityName.clear();
+                                        brandName.clear();
+                                        imageURLs.clear();
+                                        imgList.clear();
+                                        idList.clear();
+                                    }
+                                    for (int i=0; i<count; i++){
+                                        commodities[i] = array.getJSONObject(i);
+                                    }
 
-                                        for (int i=0; i<count; i++){
-                                            cName = commodities[i].getString("commodity_name");
-                                            bName = commodities[i].getString("brand_name");
-                                            iURL = commodities[i].getString("commodity_desc_img");
-                                            cid = commodities[i].getInt("commodity_id");
+                                    for (int i=0; i<count; i++){
+                                        cName = commodities[i].getString("commodity_name");
+                                        bName = commodities[i].getString("brand_name");
+                                        iURL = commodities[i].getString("commodity_desc_img");
+                                        cid = commodities[i].getInt("commodity_id");
 
-                                            commodityName.add(cName);
-                                            brandName.add(bName);
-                                            imageURLs.add(iURL);
-                                            idList.add(cid);
-                                        }
+                                        commodityName.add(cName);
+                                        brandName.add(bName);
+                                        imageURLs.add(iURL);
+                                        idList.add(cid);
+                                    }
 
-                                        // for-each commodityNameをR.drawable.名前としてintに変換してarrayに登録
-                                        for (String s: commodityName){
-                                            int imageId = getResources().getIdentifier(
-                                                    s,"drawable", getPackageName());
-                                            imgList.add(imageId);
-                                        }
+                                    // for-each commodityNameをR.drawable.名前としてintに変換してarrayに登録
+                                    for (String s1 : commodityName){
+                                        int imageId = getResources().getIdentifier(
+                                                s1,"drawable", getPackageName());
+                                        imgList.add(imageId);
+                                    }
 
-                                        // BaseAdapter を継承したGridAdapterのインスタンスを生成
-                                        // 子要素のレイアウトファイル grid_items.xml を
-                                        // activity_main.xml に inflate するためにGridAdapterに引数として渡す
-                                        GridAdapter adapter = new GridAdapter(CameraActivity.this,
-                                                R.layout.grid_items_tio,
-                                                imgList,
-                                                brandName,
-                                                commodityName,
-                                                imageURLs
-                                        );
+                                    // BaseAdapter を継承したGridAdapterのインスタンスを生成
+                                    // 子要素のレイアウトファイル grid_items.xml を
+                                    // activity_main.xml に inflate するためにGridAdapterに引数として渡す
+                                    GridAdapter adapter = new GridAdapter(CameraActivity.this,
+                                            R.layout.grid_items_tio,
+                                            imgList,
+                                            brandName,
+                                            commodityName,
+                                            imageURLs
+                                    );
 
-                                        adapter.notifyDataSetChanged();
+                                    adapter.notifyDataSetChanged();
 
-                                        // gridViewにadapterをセット
-                                        gridview.setAdapter(adapter);
-                                        gridview.invalidateViews();
+                                    // gridViewにadapterをセット
+                                    gridview.setAdapter(adapter);
+                                    gridview.invalidateViews();
 
-                                        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 //                                                //User Feedback
 //                                                AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
@@ -338,35 +330,31 @@ public class CameraActivity extends AppCompatActivity {
 //                                                });
 //                                                dl.show();
 //
-                                                url_json_commodity = "http://18.219.212.60:8080/tio_backend/commodity/detail?commodityId=" + idList.get(position);
-                                                getJsonObject(url_json_commodity);
-                                                commodityID = idList.get(position);
-                                            }
-                                        });
+                                            url_json_commodity = "http://18.219.212.60:8080/tio_backend/commodity/detail?commodityId=" + idList.get(position);
+                                            getJsonObject(url_json_commodity);
+                                            commodityID = idList.get(position);
+                                        }
+                                    });
 
-                                    } else {
-                                        msg = json.getString("msg");
-                                        //User Feedback
-                                        AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
-                                        dl.setTitle("code:" + resultCode + ", msg:" + msg);
-                                        dl.setMessage(msg);
-                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                        dl.show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                } else {
+                                    msg = json.getString("msg");
+                                    //User Feedback
+                                    AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
+                                    dl.setTitle("code:" + resultCode + ", msg:" + msg);
+                                    dl.setMessage(msg);
+                                    dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    dl.show();
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error here
-                            }
+                        error -> {
+                            // TODO: Handle error here
                         }
                 );
         mQueue.add(jsonObjectRequest);
@@ -390,47 +378,41 @@ public class CameraActivity extends AppCompatActivity {
         //JSONでGET
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, s,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    JSONObject json = new JSONObject(response.toString());
-                                    resultCode = json.getString("code");
+                        response -> {
+                            try {
+                                JSONObject json = new JSONObject(response.toString());
+                                resultCode = json.getString("code");
 
-                                    if(resultCode.equals("0")){
-                                        JSONObject data = json.getJSONObject("data");
-                                        favorited = data.getBoolean("favorited");
+                                if(resultCode.equals("0")){
+                                    JSONObject data = json.getJSONObject("data");
+                                    favorited = data.getBoolean("favorited");
 
-                                        //read color info
-                                        SharedPreferences preferences;
-                                        preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
-                                        String color = preferences.getString("theme", "bluebutton");
-                                        if(favorited){
-                                            if (color.equals("bluebutton")) {
-                                                ImageView v = findViewById(R.id.fab);
-                                                v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
-                                            } else {
-                                                ImageView v = findViewById(R.id.fab);
-                                                v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
-                                            }
+                                    //read color info
+                                    SharedPreferences preferences;
+                                    preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                    String color = preferences.getString("theme", "bluebutton");
+                                    if(favorited){
+                                        if (color.equals("bluebutton")) {
+                                            ImageView v = findViewById(R.id.fab);
+                                            v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
                                         } else {
                                             ImageView v = findViewById(R.id.fab);
-                                            v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
+                                            v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
                                         }
-
                                     } else {
-                                        msg = json.getString("msg");
+                                        ImageView v = findViewById(R.id.fab);
+                                        v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+
+                                } else {
+                                    msg = json.getString("msg");
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error here
-                            }
+                        error -> {
+                            // TODO: Handle error here
                         }
                 );
         mQueue.add(jsonObjectRequest);
@@ -446,58 +428,52 @@ public class CameraActivity extends AppCompatActivity {
         //JSONでGET
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, s,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    JSONObject json = new JSONObject(response.toString());
-                                    resultCode = json.getString("code");
+                        response -> {
+                            try {
+                                JSONObject json = new JSONObject(response.toString());
+                                resultCode = json.getString("code");
 
-                                    if(resultCode.equals("0")){
-                                        JSONObject data = json.getJSONObject("data");
-                                        favorited = data.getBoolean("favorited");
+                                if(resultCode.equals("0")){
+                                    JSONObject data = json.getJSONObject("data");
+                                    favorited = data.getBoolean("favorited");
 
-                                        //read color info
-                                        SharedPreferences preferences;
-                                        preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
-                                        String color = preferences.getString("theme", "bluebutton");
-                                        if(favorited){
-                                            if (color.equals("bluebutton")) {
-                                                ImageView v = findViewById(R.id.fab);
-                                                v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
-                                            } else {
-                                                ImageView v = findViewById(R.id.fab);
-                                                v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
-                                            }
+                                    //read color info
+                                    SharedPreferences preferences;
+                                    preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                    String color = preferences.getString("theme", "bluebutton");
+                                    if(favorited){
+                                        if (color.equals("bluebutton")) {
+                                            ImageView v = findViewById(R.id.fab);
+                                            v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
                                         } else {
                                             ImageView v = findViewById(R.id.fab);
-                                            v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
+                                            v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
                                         }
-
-                                        changeFavorited(favorited);
                                     } else {
-                                        msg = json.getString("msg");
-                                        //User Feedback
-                                        AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
-                                        dl.setTitle("code:" + resultCode + ", msg:" + msg);
-                                        dl.setMessage(msg);
-                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                        dl.show();
+                                        ImageView v = findViewById(R.id.fab);
+                                        v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+
+                                    changeFavorited(favorited);
+                                } else {
+                                    msg = json.getString("msg");
+                                    //User Feedback
+                                    AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
+                                    dl.setTitle("code:" + resultCode + ", msg:" + msg);
+                                    dl.setMessage(msg);
+                                    dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    dl.show();
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error here
-                            }
+                        error -> {
+                            // TODO: Handle error here
                         }
                 );
         mQueue.add(jsonObjectRequest);
@@ -519,55 +495,49 @@ public class CameraActivity extends AppCompatActivity {
         //JSONでGET
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, changeFavoritedURL,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    JSONObject json = new JSONObject(response.toString());
-                                    resultCode = json.getString("code");
-                                    if(resultCode.equals("0")){
-                                        JSONObject data = json.getJSONObject("data");
-                                        res = data.getString("msg");
-                                    } else {
-                                        res = json.getString("msg");
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                        response -> {
+                            try {
+                                JSONObject json = new JSONObject(response.toString());
+                                resultCode = json.getString("code");
+                                if(resultCode.equals("0")){
+                                    JSONObject data = json.getJSONObject("data");
+                                    res = data.getString("msg");
+                                } else {
+                                    res = json.getString("msg");
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
-                                //read color info
-                                SharedPreferences preferences;
-                                preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
-                                String color = preferences.getString("theme", "bluebutton");
-                                if(!favorited){
-                                    if (color.equals("bluebutton")) {
-                                        ImageView v = findViewById(R.id.fab);
-                                        v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
-                                    } else {
-                                        ImageView v = findViewById(R.id.fab);
-                                        v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
-                                    }
+                            //read color info
+                            SharedPreferences preferences;
+                            preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                            String color = preferences.getString("theme", "bluebutton");
+                            if(!favorited){
+                                if (color.equals("bluebutton")) {
+                                    ImageView v = findViewById(R.id.fab);
+                                    v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
                                 } else {
                                     ImageView v = findViewById(R.id.fab);
-                                    v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
+                                    v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
                                 }
+                            } else {
+                                ImageView v = findViewById(R.id.fab);
+                                v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
+                            }
 
-                                //User Feedback
-                                AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
-                                dl.setTitle(res);
-                                dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                dl.show();
-                            }
+                            //User Feedback
+                            AlertDialog.Builder dl = new AlertDialog.Builder(CameraActivity.this);
+                            dl.setTitle(res);
+                            dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            dl.show();
                         },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error here
-                            }
+                        error -> {
+                            // TODO: Handle error here
                         }
                 );
         mQueue.add(jsonObjectRequest);
