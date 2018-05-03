@@ -41,11 +41,12 @@ public class CameraController {
 
     private Activity activity;
 
-    private GraphicOverlay.Graphic currentGraphic, glassesGraphic, blusherGraphic;
+    private GraphicOverlay.Graphic currentGraphic, glassesGraphic, blusherGraphic, frameGraphic;
     private GraphicFaceTracker faceTracker;
 
     public enum GRAPHIC_TYPE {
         GLASSES,
+        FRAME,
         BLUSHER
     }
 
@@ -56,6 +57,7 @@ public class CameraController {
         mGraphicOverlay = activity.findViewById(R.id.faceOverlay);
 
         glassesGraphic = new GlassesGraphic(mGraphicOverlay, null);
+        frameGraphic = new GlassesGraphic(mGraphicOverlay, null, 2.5f);
         blusherGraphic = new BlusherGraphic(mGraphicOverlay, null);
         currentGraphic = glassesGraphic;
     }
@@ -175,6 +177,7 @@ public class CameraController {
         GraphicOverlay.Graphic newGraphic = null;
         switch (type) {
             case BLUSHER:newGraphic = blusherGraphic;break;
+            case FRAME:newGraphic = frameGraphic;break;
             case GLASSES:newGraphic = glassesGraphic;break;
         }
 

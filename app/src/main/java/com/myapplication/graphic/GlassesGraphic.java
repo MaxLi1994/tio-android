@@ -18,7 +18,7 @@ public class GlassesGraphic extends GraphicOverlay.Graphic {
 
     private Paint paint;
 
-    private static final float GLASS_SIZE_SCALE = 3f;
+    private static float GLASS_SIZE_SCALE = 3f;
     private static final float MINOR_MOVE_THRESHOLD = 30f;
 
     private PointF prevLeftEye, prevRightEye;
@@ -28,6 +28,12 @@ public class GlassesGraphic extends GraphicOverlay.Graphic {
 
         this.model = model;
         paint = new Paint();
+    }
+
+    public GlassesGraphic(GraphicOverlay overlay, Model2D model, float sizeScale) {
+        this(overlay, model);
+
+        GLASS_SIZE_SCALE = sizeScale;
     }
 
     /**
