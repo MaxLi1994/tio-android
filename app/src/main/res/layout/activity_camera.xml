@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -43,9 +45,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left|bottom"
-        android:layout_marginLeft="10dp"
         android:layout_marginBottom="10dp"
-        android:src="@drawable/favorite" />
+        android:layout_marginLeft="10dp"
+        android:background="@android:drawable/screen_background_light_transparent"
+        android:elevation="0dp"
+        android:src="@drawable/try_on_page_favorite_button_unselected"
+        app:backgroundTint="@android:color/transparent"
+        app:elevation="0dp" />
 
     <Button
         android:id="@+id/moreInfoButton"

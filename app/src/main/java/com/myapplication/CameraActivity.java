@@ -43,6 +43,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.myapplication.graphic.Model2D;
 import com.myapplication.graphic.ModelLoader;
 import com.myapplication.graphic.ModelTuple;
 import com.myapplication.vision.CameraController;
@@ -152,6 +153,9 @@ public class CameraActivity extends AppCompatActivity {
         });
 
 
+        // Vision part
+        cameraController = new CameraController(this);
+
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -162,10 +166,15 @@ public class CameraActivity extends AppCompatActivity {
         }
 
 
+        // -----------
+        // example
         int[] glassesID = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
         CameraController.GRAPHIC_TYPE[] types = new CameraController.GRAPHIC_TYPE[glassesID.length];
         Arrays.fill(types, CameraController.GRAPHIC_TYPE.GLASSES);
         modelTupleList = ModelLoader.loadModels(this.getApplicationContext(), types, Arrays.stream(glassesID).mapToObj(i -> "https://s3.us-east-2.amazonaws.com/ibed/g/" + i + ".png").toArray(String[]::new));
+        ModelTuple tuple = modelTupleList.get(0);
+        cameraController.showModel(tuple.type, tuple.model);
+        // -----------
 
     }
 
@@ -188,21 +197,43 @@ public class CameraActivity extends AppCompatActivity {
 
                                     if(resultCode.equals("0")){
                                         JSONObject data = json.getJSONObject("data");
-                                        String iURL = data.getString("desc_img");
+                                        String iURL = data.getString("model_url");
                                         int id = data.getInt("id");
+                                        int categoryId = data.getInt("category_id");
 
-                                        urlForImage = iURL;
-                                        ImageView iv = findViewById(R.id.tioCommodity);
-                                        System.out.println(urlForImage);
-                                        addUrlImage(urlForImage, iv);
+//                                        urlForImage = iURL;
+//                                        ImageView iv = findViewById(R.id.tioCommodity);
+//                                        System.out.println(urlForImage);
+//                                        addUrlImage(urlForImage, iv);
+                                        Model2D model = new Model2D(CameraActivity.this.getApplicationContext(), iURL);
+                                        model.load();
+                                        CameraController.GRAPHIC_TYPE type = null;
+                                        switch (categoryId) {
+                                            case 1: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
+                                            case 2: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
+                                            case 3: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
+                                            case 4: type = CameraController.GRAPHIC_TYPE.BLUSHER;break;
+                                        }
+
+                                        cameraController.showModel(type, model);
 
                                         checkFavorite(id, userID);
+
+                                        //read color info
+                                        SharedPreferences preferences;
+                                        preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                        String color = preferences.getString("theme", "bluebutton");
                                         if(favorited){
-                                            ImageView v = findViewById(R.id.fab);
-                                            v.setImageResource(R.drawable.favorite);
+                                            if (color.equals("bluebutton")) {
+                                                ImageView v = findViewById(R.id.fab);
+                                                v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
+                                            } else {
+                                                ImageView v = findViewById(R.id.fab);
+                                                v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
+                                            }
                                         } else {
                                             ImageView v = findViewById(R.id.fab);
-                                            v.setImageResource(R.drawable.blue);
+                                            v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
                                         }
 
                                     } else {
@@ -381,12 +412,21 @@ public class CameraActivity extends AppCompatActivity {
                                         JSONObject data = json.getJSONObject("data");
                                         favorited = data.getBoolean("favorited");
 
+                                        //read color info
+                                        SharedPreferences preferences;
+                                        preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                        String color = preferences.getString("theme", "bluebutton");
                                         if(favorited){
-                                            ImageView v = findViewById(R.id.fab);
-                                            v.setImageResource(R.drawable.favorite);
+                                            if (color.equals("bluebutton")) {
+                                                ImageView v = findViewById(R.id.fab);
+                                                v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
+                                            } else {
+                                                ImageView v = findViewById(R.id.fab);
+                                                v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
+                                            }
                                         } else {
                                             ImageView v = findViewById(R.id.fab);
-                                            v.setImageResource(R.drawable.blue);
+                                            v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
                                         }
 
                                     } else {
@@ -428,12 +468,21 @@ public class CameraActivity extends AppCompatActivity {
                                         JSONObject data = json.getJSONObject("data");
                                         favorited = data.getBoolean("favorited");
 
+                                        //read color info
+                                        SharedPreferences preferences;
+                                        preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                        String color = preferences.getString("theme", "bluebutton");
                                         if(favorited){
-                                            ImageView v = findViewById(R.id.fab);
-                                            v.setImageResource(R.drawable.blue);
+                                            if (color.equals("bluebutton")) {
+                                                ImageView v = findViewById(R.id.fab);
+                                                v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
+                                            } else {
+                                                ImageView v = findViewById(R.id.fab);
+                                                v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
+                                            }
                                         } else {
                                             ImageView v = findViewById(R.id.fab);
-                                            v.setImageResource(R.drawable.favorite);
+                                            v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
                                         }
 
                                         changeFavorited(favorited);
@@ -497,12 +546,21 @@ public class CameraActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
-                                if(favorited){
-                                    ImageView v = findViewById(R.id.fab);
-                                    v.setImageResource(R.drawable.blue);
+                                //read color info
+                                SharedPreferences preferences;
+                                preferences = CameraActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                String color = preferences.getString("theme", "bluebutton");
+                                if(!favorited){
+                                    if (color.equals("bluebutton")) {
+                                        ImageView v = findViewById(R.id.fab);
+                                        v.setImageResource(R.drawable.try_on_page_favorite_button_blue);
+                                    } else {
+                                        ImageView v = findViewById(R.id.fab);
+                                        v.setImageResource(R.drawable.try_on_page_favorite_button_pink);
+                                    }
                                 } else {
                                     ImageView v = findViewById(R.id.fab);
-                                    v.setImageResource(R.drawable.favorite);
+                                    v.setImageResource(R.drawable.try_on_page_favorite_button_unselected);
                                 }
 
                                 //User Feedback
@@ -524,8 +582,6 @@ public class CameraActivity extends AppCompatActivity {
                         }
                 );
         mQueue.add(jsonObjectRequest);
-        cameraController = new CameraController(this);
-
     }
 
     /**
