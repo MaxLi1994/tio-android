@@ -79,6 +79,15 @@ public class NavigationActivity extends AppCompatActivity
 
         //Favorite Button
         favorite = findViewById(R.id.favorite);
+        //read color info
+        SharedPreferences preferences;
+        preferences = this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        String color = preferences.getString("theme", "bluebutton");
+        if (color.equals("bluebutton")) {
+            favorite.setImageResource(R.drawable.main_page_favorite_list_entrace_blue);
+        } else {
+            favorite.setImageResource(R.drawable.main_page_favorite_list_entrace_pink);
+        }
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,7 +96,7 @@ public class NavigationActivity extends AppCompatActivity
         });
 
         //set category list on toolbar
-        categoryList = new String[] {"All Kinds", "sunglasses", "lipstick"};
+        categoryList = new String[] {"All Kinds", "sunglasses", "glassframe", "blush"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -105,7 +114,10 @@ public class NavigationActivity extends AppCompatActivity
                 } else if(selectedCategory.equals("sunglasses")) {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
                     getJsonObjectList(url_json);
-                } else if(selectedCategory.equals("lipstick")) {
+                } else if(selectedCategory.equals("glassframe")) {
+                    url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
+                    getJsonObjectList(url_json);
+                } else if(selectedCategory.equals("blush")) {
                     url_json = "http://18.219.212.60:8080/tio_backend/commodity/list?categoryName=" + selectedCategory;
                     getJsonObjectList(url_json);
                 } else {
