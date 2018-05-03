@@ -7,22 +7,22 @@
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="100dp"
         android:scaleType="fitCenter"/>
 
     <TextView
         android:id="@+id/text_view"
         android:gravity="center"
-        android:textSize="14sp"
+        android:textSize="10sp"
         android:textColor="#000"
         android:background="@drawable/frame_style"
         android:shadowDx="2"
         android:shadowDy="2"
         android:shadowRadius="2"
         android:shadowColor="#444"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="2dp"
         android:layout_alignBottom="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -30,16 +30,16 @@
     <TextView
         android:id="@+id/text_view2"
         android:gravity="center"
-        android:textSize="14sp"
+        android:textSize="10sp"
         android:textColor="#000"
         android:background="@drawable/frame_style"
         android:shadowDx="2"
         android:shadowDy="2"
         android:shadowRadius="2"
         android:shadowColor="#444"
-        android:layout_marginTop="145dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
