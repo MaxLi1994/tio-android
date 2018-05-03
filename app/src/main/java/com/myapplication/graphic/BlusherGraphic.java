@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.Landmark;
@@ -21,10 +22,10 @@ public class BlusherGraphic extends GraphicOverlay.Graphic {
     private Paint paint;
 
     private static final float BLUSHER_SIZE_SCALE = 0.2f;
-    private static final float CHEEK_DISTANCE_BASE = 500f;
-    private static final float CHEEK_OFFSET_X = -30f;
+    private static final float CHEEK_DISTANCE_BASE = 250f;
+    private static final float CHEEK_OFFSET_X = -20f;
     private static final float CHEEK_OFFSET_Y = -20f;
-    private static final float MINOR_MOVE_THRESHOLD = 50f;
+    private static final float MINOR_MOVE_THRESHOLD = 80f;
 
     private PointF prevLeftCheek, prevRightCheek;
 
@@ -72,7 +73,7 @@ public class BlusherGraphic extends GraphicOverlay.Graphic {
 
     @Override
     public void draw(Canvas canvas) {
-        if (model != null && model.isReady()) {
+        if (model != null && model.isReady() && face != null) {
             PointF leftCheek, rightCheek;
 
             List<Landmark> landmarks = face.getLandmarks();
