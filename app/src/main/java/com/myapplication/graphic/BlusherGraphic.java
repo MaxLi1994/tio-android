@@ -21,7 +21,7 @@ public class BlusherGraphic extends GraphicOverlay.Graphic {
     private Paint paint;
 
     private static final float BLUSHER_SIZE_SCALE = 0.2f;
-    private static final float CHEEK_DISTANCE_BASE = 250f;
+    private static final float CHEEK_DISTANCE_BASE = 500f;
     private static final float CHEEK_OFFSET_X = -30f;
     private static final float CHEEK_OFFSET_Y = -20f;
     private static final float MINOR_MOVE_THRESHOLD = 50f;
