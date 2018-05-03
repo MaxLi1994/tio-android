@@ -47,7 +47,6 @@
         android:layout_gravity="left|bottom"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
-        android:background="@android:drawable/screen_background_light_transparent"
         android:elevation="0dp"
         android:src="@drawable/try_on_page_favorite_button_unselected" />
 
@@ -56,8 +55,9 @@
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginLeft="100dp"
-        android:layout_marginTop="450dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="510dp"
+        android:textColor="#fff"
+        android:textSize="18dp"
         android:text="More Info" />
 
     <ImageView

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -141,6 +143,15 @@ public class CameraActivity extends AppCompatActivity {
 
         //More Info Button
         moreInfoButton = findViewById(R.id.moreInfoButton);
+        //read color info
+        String color = preferences.getString("theme", "bluebutton");
+        if (color.equals("bluebutton")) {
+            Drawable btn_color = ResourcesCompat.getDrawable(getResources(), R.drawable.frame_style2, null);
+            moreInfoButton.setBackground(btn_color);
+        } else {
+            Drawable btn_color = ResourcesCompat.getDrawable(getResources(), R.drawable.frame_style3, null);
+            moreInfoButton.setBackground(btn_color);
+        }
         moreInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -315,6 +326,7 @@ public class CameraActivity extends AppCompatActivity {
 
                                     // gridViewにadapterをセット
                                     gridview.setAdapter(adapter);
+                                    gridview.smoothScrollToPosition(idList.indexOf(commodityID)+2);
                                     gridview.invalidateViews();
 
                                     gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
