@@ -209,7 +209,7 @@ public class CameraActivity extends AppCompatActivity {
                                     switch (categoryId) {
                                         case 1: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
                                         case 2: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
-                                        case 3: type = CameraController.GRAPHIC_TYPE.GLASSES;break;
+                                        case 3: type = CameraController.GRAPHIC_TYPE.FRAME;break;
                                         case 4: type = CameraController.GRAPHIC_TYPE.BLUSHER;break;
                                     }
 
