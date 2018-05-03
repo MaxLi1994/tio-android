@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -155,7 +158,7 @@ public class NavigationActivity extends AppCompatActivity
         nicknameField.setText(nicknameGlobal);
         accountField = header.findViewById(R.id.account1);
         accountField.setText(accountGlobal);
-        imageField = header.findViewById(R.id.imageView);
+        //imageField = header.findViewById(R.id.imageView);
 
         //Tap the navigation bar
         nicknameField.setOnClickListener(new View.OnClickListener() {
@@ -178,16 +181,16 @@ public class NavigationActivity extends AppCompatActivity
                 }
             }
         });
-        imageField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(idGlobal == -1){
-                    goToLogin(); //If not logged in (-1), go to Login
-                } else {
-                    goToSetting(); //If logged in, go to Setting
-                }
-            }
-        });
+//        imageField.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(idGlobal == -1){
+//                    goToLogin(); //If not logged in (-1), go to Login
+//                } else {
+//                    goToSetting(); //If logged in, go to Setting
+//                }
+//            }
+//        });
     }
 
     public void getJsonObjectList(String destination) {

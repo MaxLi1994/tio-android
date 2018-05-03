@@ -24,7 +24,7 @@
         android:id="@+id/buttonBlue"
         android:layout_width="138dp"
         android:layout_height="55dp"
-        android:layout_alignLeft="@+id/textView"
+        android:layout_marginLeft="24dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="12dp"
         android:background="@drawable/bluebutton"
@@ -37,14 +37,15 @@
         android:id="@+id/buttonPink"
         android:layout_width="138dp"
         android:layout_height="55dp"
-        android:layout_alignRight="@+id/textView"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="12dp"
+        android:layout_marginRight="24dp"
         android:background="@drawable/pinkbutton"
+        android:text="Pink"
         android:textColor="#fff"
         android:textSize="18dp"
-        android:textStyle="bold"
-        android:text="Pink" />
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/male"
@@ -112,5 +113,5 @@
         android:layout_marginBottom="75dp"
         android:text="Which color do you prefer?"
         android:textColor="@android:color/background_light"
-        android:textSize="24sp" />
+        android:textSize="20sp" />
 </RelativeLayout>

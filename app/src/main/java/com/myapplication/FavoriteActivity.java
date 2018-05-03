@@ -9,9 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ListView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,6 +32,7 @@ public class FavoriteActivity extends AppCompatActivity {
 
     private List<Integer> favoriteList = new ArrayList<>();
     private List<String> commodityName = new ArrayList<>();
+    private List<String> brandName = new ArrayList<>();
     private List<String> imageURLs = new ArrayList<>();
 
     // Resource IDを格納するarray
@@ -81,14 +80,17 @@ public class FavoriteActivity extends AppCompatActivity {
                                         }
 
                                         String cName = "";
+                                        String bName = "";
                                         String iURL = "";
 
                                         for (int i=0; i<count; i++){
-                                            cName = commodities[i].getString("name");
-                                            iURL = commodities[i].getString("desc_img");
-                                            commodityID = commodities[i].getInt("id");
+                                            cName = commodities[i].getString("commodity_name");
+                                            bName = commodities[i].getString("brand_name");
+                                            iURL = commodities[i].getString("commodity_desc_img");
+                                            commodityID = commodities[i].getInt("commodity_id");
 
                                             commodityName.add(cName);
+                                            brandName.add(bName);
                                             imageURLs.add(iURL);
                                             favoriteList.add(commodityID);
                                         }
@@ -106,6 +108,7 @@ public class FavoriteActivity extends AppCompatActivity {
                                         GridAdapterFavorite adapter = new GridAdapterFavorite(FavoriteActivity.this,
                                                 R.layout.grid_items_favorite,
                                                 imgList,
+                                                brandName,
                                                 commodityName,
                                                 imageURLs
                                         );

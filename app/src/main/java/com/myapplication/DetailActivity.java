@@ -1,12 +1,15 @@
 package com.myapplication;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -75,8 +78,25 @@ public class DetailActivity extends AppCompatActivity {
                                         TextView tv2 = findViewById(R.id.detailDescription);
                                         tv2.setText(detailDesc);
 
-                                        TextView tv3 = findViewById(R.id.detailURL);
-                                        tv3.setText(detailURL);
+                                        //read color info
+                                        SharedPreferences preferences;
+                                        preferences = DetailActivity.this.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+                                        String color = preferences.getString("theme", "bluebutton");
+
+                                        Button b = findViewById(R.id.detailURL);
+                                        if (color.equals("bluebutton")) {
+                                            b.setBackgroundResource(R.drawable.frame_style2);
+                                        } else {
+                                            b.setBackgroundResource(R.drawable.frame_style3);
+                                        }
+                                        b.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Uri uri = Uri.parse(detailURL);
+                                                Intent i = new Intent(Intent.ACTION_VIEW,uri);
+                                                startActivity(i);
+                                            }
+                                        });
 
                                         urlForImage = iURL;
                                         ImageView iv = findViewById(R.id.detailImage);

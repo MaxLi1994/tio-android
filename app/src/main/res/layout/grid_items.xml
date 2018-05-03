@@ -22,10 +22,10 @@
         android:shadowColor="#444"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="0dp"
         android:layout_alignBottom="@+id/image_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="20dp"/>
 
     <TextView
         android:id="@+id/text_view2"
@@ -41,6 +41,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="20dp"/>
 
 </RelativeLayout>

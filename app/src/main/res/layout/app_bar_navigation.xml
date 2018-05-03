@@ -29,7 +29,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="top|end"
-                android:layout_margin="10dp"
+                android:layout_margin="20dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/main_page_favorite_list_entrace_pink" />
         </android.support.v7.widget.Toolbar>
