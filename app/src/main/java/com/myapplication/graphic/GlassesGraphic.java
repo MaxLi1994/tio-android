@@ -65,7 +65,7 @@ public class GlassesGraphic extends GraphicOverlay.Graphic {
     }
     @Override
     public void draw(Canvas canvas) {
-        if (model != null && model.isReady()) {
+        if (model != null && model.isReady() && face != null) {
             PointF leftEye, rightEye;
 
             List<Landmark> landmarks = face.getLandmarks();

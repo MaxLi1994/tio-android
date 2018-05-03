@@ -56,7 +56,7 @@ public class CameraController {
         mGraphicOverlay = activity.findViewById(R.id.faceOverlay);
 
         glassesGraphic = new GlassesGraphic(mGraphicOverlay, null);
-        blusherGraphic = new GlassesGraphic(mGraphicOverlay, null);
+        blusherGraphic = new BlusherGraphic(mGraphicOverlay, null);
         currentGraphic = glassesGraphic;
     }
 
