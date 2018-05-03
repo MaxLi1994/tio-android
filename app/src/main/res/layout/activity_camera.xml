@@ -40,18 +40,16 @@
         android:stretchMode="columnWidth"
         android:verticalSpacing="5dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <ImageView
         android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="left|bottom"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:background="@android:drawable/screen_background_light_transparent"
         android:elevation="0dp"
-        android:src="@drawable/try_on_page_favorite_button_unselected"
-        app:backgroundTint="@android:color/transparent"
-        app:elevation="0dp" />
+        android:src="@drawable/try_on_page_favorite_button_unselected" />
 
     <Button
         android:id="@+id/moreInfoButton"
