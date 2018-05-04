@@ -38,7 +38,7 @@
         android:horizontalSpacing="5dp"
         android:numColumns="1"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="5dp" />
+        android:verticalSpacing="0dp" />
 
     <ImageView
         android:id="@+id/fab"
@@ -55,7 +55,7 @@
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginLeft="100dp"
-        android:layout_marginTop="500dp"
+        android:layout_marginTop="505dp"
         android:textColor="#fff"
         android:textSize="18dp"
         android:text="More Info" />

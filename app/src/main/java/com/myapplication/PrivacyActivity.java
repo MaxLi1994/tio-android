@@ -15,9 +15,11 @@ public class PrivacyActivity extends AppCompatActivity {
         text.setText("Information Collected From Users:\n" +
                 "\n" +
                 "The information collected when user accessing or interacting with our app is separated into mainly the following two parts: \n" +
+                "\n" +
                 "I. Automatic collected information:\n" +
                 "Device Information: We collect information about the operating system and version our user use to access our services to provide better user experience.\n" +
                 "User facial information: We would need to collect user’s facial information in order to achieve the virtual try on effect, but we will not store this information into our server or database, all this kind of information will only be stored in user’s local device.\n" +
+                "\n" +
                 "II. User Information Choice:\n" +
                 "Camera access permission: our app need to access the camera of user’s device in order to enable live presentation of virtual try on effects.\n" +
                 "Photo library access permission: User could screenshot preview pictures and save to local photo library. \n" +

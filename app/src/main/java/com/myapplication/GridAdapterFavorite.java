@@ -115,24 +115,26 @@ public class GridAdapterFavorite extends BaseAdapter {
         ImageView img = v.findViewById(R.id.image_view_f);
         Picasso.with(context)
                 .load(url)
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
-                        dr.setCornerRadius(50f);
-                        img.setImageDrawable(dr);
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-                        Log.e("list-item", "failed");
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
+                .transform(new CircleTransform())
+                .into(img);
+//                .into(new Target() {
+//                    @Override
+//                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+//                        dr.setCornerRadius(50f);
+//                        img.setImageDrawable(dr);
+//                    }
+//
+//                    @Override
+//                    public void onBitmapFailed(Drawable errorDrawable) {
+//                        Log.e("list-item", "failed");
+//                    }
+//
+//                    @Override
+//                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+//
+//                    }
+//                });
     }
 
     @Override

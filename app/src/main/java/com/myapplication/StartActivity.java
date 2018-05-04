@@ -149,7 +149,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         //move iv to right
         objectAnimator = ObjectAnimator.ofFloat(iv, "x", 1050);
         //set duration
-        objectAnimator.setDuration(2000);
+        objectAnimator.setDuration(1500);
         //start animation
         objectAnimator.start();
     }
@@ -160,7 +160,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         //move iv to right
         objectAnimator = ObjectAnimator.ofFloat(iv, "x", 0);
         //set duration
-        objectAnimator.setDuration(2000);
+        objectAnimator.setDuration(1500);
         //start animation
         objectAnimator.start();
     }
@@ -169,7 +169,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         // 透明度を1から0に変化
         AlphaAnimation alphaFadeout = new AlphaAnimation(1.0f, 0.0f);
         // animation時間 msec
-        alphaFadeout.setDuration(2000);
+        alphaFadeout.setDuration(1500);
         // animationが終わったそのまま表示にする
         alphaFadeout.setFillAfter(true);
 
@@ -180,7 +180,7 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         // 透明度を0から1に変化
         AlphaAnimation alphaFadeIn = new AlphaAnimation(0.0f, 1.0f);
         // animation時間 msec
-        alphaFadeIn.setDuration(2000);
+        alphaFadeIn.setDuration(1500);
         // animationが終わったそのまま表示にする
         alphaFadeIn.setFillAfter(true);
 

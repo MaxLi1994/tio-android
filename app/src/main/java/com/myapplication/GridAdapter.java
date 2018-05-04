@@ -4,7 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -115,24 +121,26 @@ public class GridAdapter extends BaseAdapter {
         ImageView img = v.findViewById(R.id.image_view);
         Picasso.with(context)
                 .load(url)
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
-                        dr.setCornerRadius(50f);
-                        img.setImageDrawable(dr);
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-                        Log.e("list-item", "failed");
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
+                .transform(new CircleTransform())
+                .into(img);
+//                .into(new Target() {
+//                    @Override
+//                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+//                        dr.setCornerRadius(50f);
+//                        img.setImageDrawable(dr);
+//                    }
+//
+//                    @Override
+//                    public void onBitmapFailed(Drawable errorDrawable) {
+//                        Log.e("list-item", "failed");
+//                    }
+//
+//                    @Override
+//                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+//
+//                    }
+//                });
     }
 
     @Override
