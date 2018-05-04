@@ -7,25 +7,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends AppCompatActivity
+{
     private TextView textView;
 
     // UI references.
@@ -37,7 +34,8 @@ public class SettingActivity extends AppCompatActivity {
     private int idToCheck;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         // Set up the login form.
@@ -49,9 +47,11 @@ public class SettingActivity extends AppCompatActivity {
         mNicknameView = (EditText) findViewById(R.id.nickname_setting);
 
         Button confirmButton = (Button) findViewById(R.id.confirm_change);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
+        confirmButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 attemptChangeNickname();
             }
         });
@@ -60,9 +60,11 @@ public class SettingActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
 
         TextView signupText = (TextView) findViewById(R.id.forSetting2);
-        signupText.setOnClickListener(new View.OnClickListener() {
+        signupText.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 forSetting2();
             }
         });
@@ -71,7 +73,8 @@ public class SettingActivity extends AppCompatActivity {
         preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
         idToCheck = preferences.getInt("id", -1);
         //If logged in
-        if (idToCheck != -1) {
+        if (idToCheck != -1)
+        {
             mEmailView.setText(preferences.getString("account", "Tap to log in"));
             mNicknameView.setText(preferences.getString("nickname", ""));
         }
@@ -79,34 +82,33 @@ public class SettingActivity extends AppCompatActivity {
         textView = findViewById(R.id.textView5);
     }
 
-    private void forSetting2() {
+    private void forSetting2()
+    {
         Intent intent = new Intent(this, SettingActivity2.class);
         startActivity(intent);
     }
 
 
-    private void attemptChangeNickname() {
-        //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
-        //setContentView(R.layout.activity_setting);
-        //textView = findViewById(R.id.textView5);
-
-        //HTTPリクエストを行う Queue を生成する
+    private void attemptChangeNickname()
+    {
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
-        //JSON用URL
         String url_json = "http://18.219.212.60:8080/tio_backend/user/changeNickname?" +
                 "userId=" + idToCheck +
                 "&newNickname=" + mNicknameView.getText().toString();
 
+        //debug
         System.out.println(url_json);
 
-        //JSONでPOST
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
             (Request.Method.POST, url_json,
-                    new Response.Listener<JSONObject>() {
+                    new Response.Listener<JSONObject>()
+                    {
                         @Override
-                        public void onResponse(JSONObject response) {
-                            try {
+                        public void onResponse(JSONObject response)
+                        {
+                            try
+                            {
                                 JSONObject json = new JSONObject(response.toString());
                                 String resultCode = json.getString("code");
 
@@ -115,6 +117,7 @@ public class SettingActivity extends AppCompatActivity {
                                     String nickname = data.getString("nickname");
                                     String account = data.getString("account");
                                     Integer id = data.getInt("id");
+                                    //debug
                                     //textView.setText("code:" + resultCode + ", account:" + account + ", nickname:" + nickname + ", id:" + id);
 
                                     //Edit Login Info
@@ -130,14 +133,16 @@ public class SettingActivity extends AppCompatActivity {
                                     //User Feedback
                                     AlertDialog.Builder dl = new AlertDialog.Builder(SettingActivity.this);
                                     dl.setTitle("Your nickname has updated!");
-                                    dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    dl.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                    {
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
                                             SettingActivity.this.finish();
                                         }
                                     });
                                     dl.show();
-                                } else {
+                                }
+                                else {
                                     String msg = json.getString("msg");
                                     //textView.setText("code:" + resultCode + ", msg:" + msg);
 
@@ -145,22 +150,26 @@ public class SettingActivity extends AppCompatActivity {
                                     AlertDialog.Builder dl = new AlertDialog.Builder(SettingActivity.this);
                                         dl.setTitle("Error");
                                         dl.setMessage(msg);
-                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                        {
                                             public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
                                             }
                                     });
                                     dl.show();
                                 }
-                            } catch (JSONException e) {
+                            }
+                            catch (JSONException e)
+                            {
                                 e.printStackTrace();
                             }
                         }
                     },
-                    new Response.ErrorListener() {
+                    new Response.ErrorListener()
+                    {
                         @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // TODO: Handle error here
+                        public void onErrorResponse(VolleyError error)
+                        {
                         }
                     }
                 );

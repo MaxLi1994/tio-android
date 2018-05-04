@@ -4,13 +4,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class PrivacyActivity extends AppCompatActivity {
-
+public class PrivacyActivity extends AppCompatActivity
+{
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy);
 
+        //privacy policy statement
         TextView text = findViewById(R.id.privacyTextView);
         text.setText("Information Collected From Users:\n" +
                 "\n" +

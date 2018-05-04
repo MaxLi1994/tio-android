@@ -32,13 +32,9 @@
         <activity
             android:name=".SettingActivity"
             android:label="Settings" />
-        <activity android:name=".CategoryActivity" />
         <activity
             android:name=".SettingActivity2"
             android:label="Settings" />
-        <activity
-            android:name=".StartActivity2"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".StartActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">

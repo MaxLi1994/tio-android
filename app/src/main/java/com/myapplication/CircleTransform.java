@@ -4,20 +4,23 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 
 import com.squareup.picasso.Transformation;
 
-public class CircleTransform implements Transformation {
+//transform a square bitmap to circle bitmap
+public class CircleTransform implements Transformation
+{
     @Override
-    public Bitmap transform(Bitmap source) {
+    public Bitmap transform(Bitmap source)
+    {
         int size = Math.min(source.getWidth(), source.getHeight());
 
         int x = (source.getWidth() - size) / 2;
         int y = (source.getHeight() - size) / 2;
 
         Bitmap squaredBitmap = Bitmap.createBitmap(source, x, y, size, size);
-        if (squaredBitmap != source) {
+        if (squaredBitmap != source)
+        {
             source.recycle();
         }
 
@@ -29,10 +32,6 @@ public class CircleTransform implements Transformation {
         paint.setShader(shader);
         paint.setAntiAlias(true);
 
-//        float r = size/1f;
-//        RectF rectf = new RectF(1, 1, r, r);
-//        canvas.drawRoundRect(rectf, 15, 15, paint);
-
         float r = size/2f;
         canvas.drawCircle(r, r, r, paint);
 
@@ -41,7 +40,8 @@ public class CircleTransform implements Transformation {
     }
 
     @Override
-    public String key() {
+    public String key()
+    {
         return "circle";
     }
 }
