@@ -63,8 +63,8 @@ public class CameraController {
     }
 
     /**
-     * Handles the requesting of the camera permission.  This includes
-     * showing a "Snackbar" message of why the permission is needed then
+     * Handles the requesting of the camera permission.
+     * This includes showing a "Snackbar" message of why the permission is needed then
      * sending the request.
      */
     public void requestCameraPermission() {
@@ -95,7 +95,8 @@ public class CameraController {
     }
 
     /**
-     * Creates and starts the camera.  Note that this uses a higher resolution in comparison
+     * Creates and starts the camera.
+     * Note that this uses a higher resolution in comparison
      * to other detection examples to enable the barcode detector to detect small barcodes
      * at long distances.
      */
