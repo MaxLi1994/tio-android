@@ -11,18 +11,17 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SettingActivity2 extends AppCompatActivity {
+public class SettingActivity2 extends AppCompatActivity
+{
     private TextView textView;
 
     // UI references.
@@ -33,7 +32,8 @@ public class SettingActivity2 extends AppCompatActivity {
     private SharedPreferences preferences;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting2);
         // Set up the login form.
@@ -43,9 +43,11 @@ public class SettingActivity2 extends AppCompatActivity {
         mNicknameView = (EditText) findViewById(R.id.new_password);
 
         Button confirmButton = (Button) findViewById(R.id.confirm_change);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
+        confirmButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 attemptChangePassword();
             }
         });
@@ -56,18 +58,13 @@ public class SettingActivity2 extends AppCompatActivity {
         textView = findViewById(R.id.textView6);
     }
 
-    private void attemptChangePassword() {
-        //ログインボタン押下後に扱うテキストを指定（デバッグ用にHTTP Responseを表示させる）
-        //setContentView(R.layout.activity_setting2);
-        //textView = findViewById(R.id.textView6);
-
-        //HTTPリクエストを行う Queue を生成する
+    private void attemptChangePassword()
+    {
         RequestQueue mQueue = Volley.newRequestQueue(this);
 
         preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
         int idToCheck = preferences.getInt("id",-1);
 
-        //JSON用URL
         String url_json = "http://18.219.212.60:8080/tio_backend/user/changePassword?" +
                 "userId=" + idToCheck+
                 "&oldPassword=" + mEmailView.getText().toString() +
@@ -75,54 +72,61 @@ public class SettingActivity2 extends AppCompatActivity {
 
         System.out.println(url_json);
 
-        //JSONでPOST
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, url_json,
-                        new Response.Listener<JSONObject>() {
+                        new Response.Listener<JSONObject>()
+                        {
                             @Override
-                            public void onResponse(JSONObject response) {
-                                try {
+                            public void onResponse(JSONObject response)
+                            {
+                                try
+                                {
                                     JSONObject json = new JSONObject(response.toString());
                                     String resultCode = json.getString("code");
 
                                     if(resultCode.equals("0")){
                                         String msg = json.getString("data");
-                                        //textView.setText("code:" + resultCode + ", msg:" + msg);
 
                                         //User Feedback
                                         AlertDialog.Builder dl = new AlertDialog.Builder(SettingActivity2.this);
                                         dl.setTitle("Your password has updated!");
-                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
+                                        dl.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                        {
+                                            public void onClick(DialogInterface dialog, int which)
+                                            {
                                                 dialog.dismiss();
                                                 SettingActivity2.this.finish();
                                             }
                                         });
                                         dl.show();
-                                    } else {
+                                    }
+                                    else {
                                         String msg = json.getString("msg");
-                                        //textView.setText("code:" + resultCode + ", msg:" + msg);
 
                                         //User Feedback
                                         AlertDialog.Builder dl = new AlertDialog.Builder(SettingActivity2.this);
                                             dl.setTitle("Error");
                                             dl.setMessage(msg);
-                                            dl.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            dl.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                            {
                                                 public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
                                             }
                                         });
                                         dl.show();
                                     }
-                                } catch (JSONException e) {
+                                }
+                                catch (JSONException e)
+                                {
                                     e.printStackTrace();
                                 }
                             }
                         },
-                        new Response.ErrorListener() {
+                        new Response.ErrorListener()
+                        {
                             @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error here
+                            public void onErrorResponse(VolleyError error)
+                            {
                             }
                         }
                 );

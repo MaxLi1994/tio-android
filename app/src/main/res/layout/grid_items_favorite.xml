@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="3dp" >
 
     <ImageView
-        android:id="@+id/image_view"
+        android:id="@+id/image_view_f"
         android:layout_width="match_parent"
         android:layout_height="190dp"
         android:scaleType="fitCenter"/>
 
     <TextView
-        android:id="@+id/text_view"
+        android:id="@+id/text_view_f"
         android:gravity="center"
         android:textSize="14sp"
         android:textColor="#000"
@@ -22,9 +23,25 @@
         android:shadowColor="#444"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_alignBottom="@+id/image_view"
+        android:layout_marginBottom="0dp"
+        android:layout_alignBottom="@+id/image_view_f"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="20dp"/>
+
+    <TextView
+        android:id="@+id/text_view2_f"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textColor="#000"
+        android:background="@drawable/frame_style"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:shadowColor="#444"
+        android:layout_marginTop="145dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
 
 </RelativeLayout>

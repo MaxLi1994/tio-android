@@ -13,9 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import com.squareup.picasso.Picasso;
 
-public class GridAdapter extends BaseAdapter {
-
-    class ViewHolder {
+public class GridAdapter extends BaseAdapter
+{
+    class ViewHolder
+    {
         ImageView imageView;
         TextView textView;
         TextView textView2;
@@ -26,15 +27,16 @@ public class GridAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private int layoutId;
     private Context context;
+    private SharedPreferences preferences;
+    private String color;
 
-    // 引数がMainActivityからの設定と合わせる
     GridAdapter(Context context,
                 int layoutId,
                 List<Integer> iList,
                 List<String> brandName,
                 List<String> commodityName,
-                List<String> URLs) {
-
+                List<String> URLs)
+    {
         super();
         this.inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -48,19 +50,22 @@ public class GridAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
         ViewHolder holder;
 
-        if (convertView == null) {
-            // main.xml の <GridView .../> に grid_items.xml を inflate して convertView とする
+        if (convertView == null)
+        {
+            //inflate grid items and make convertView
             convertView = inflater.inflate(layoutId, parent, false);
 
-            // ViewHolder を生成
+            //create ViewHolder
             holder = new ViewHolder();
 
             holder.imageView = convertView.findViewById(R.id.image_view);
             holder.textView = convertView.findViewById(R.id.text_view);
             holder.textView2 = convertView.findViewById(R.id.text_view2);
+            holder.textView.setTextColor(Color.WHITE);
 
             convertView.setTag(holder);
         }
@@ -68,52 +73,59 @@ public class GridAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        try {
+        try
+        {
             holder.imageView.setImageResource(imageList.get(position));
             holder.textView.setText(brandNames.get(position));
             holder.textView2.setText(commodityNames.get(position));
 
+            //read color info
+            preferences = this.context.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+            color = preferences.getString("theme", "bluebutton");
+            if (color.equals("bluebutton"))
+            {
+                holder.textView.setBackgroundResource(R.drawable.frame_style2);
+            }
+            else {
+                holder.textView.setBackgroundResource(R.drawable.frame_style3);
+                holder.textView.setTextColor(Color.WHITE);
+            }
+
             //Add Image from URL
             addUrlImage(url.get(position), convertView);
-        } catch (Exception e) {
-
         }
-
-        //read color info
-        SharedPreferences preferences;
-        preferences = this.context.getSharedPreferences("DATA", Context.MODE_PRIVATE);
-        String color = preferences.getString("theme", "bluebutton");
-        //If logged in
-        if (color.equals("bluebutton")) {
-            convertView.setBackgroundResource(R.drawable.frame_style2);
-        } else {
-            convertView.setBackgroundResource(R.drawable.frame_style3);
+        catch (Exception e)
+        {
         }
 
         return convertView;
     }
 
-    // ネットワークアクセスするURLを設定する
-    private void addUrlImage(String url, View v){
+    private void addUrlImage(String url, View v)
+    {
         ImageView img = v.findViewById(R.id.image_view);
         Picasso.with(context)
                 .load(url)
+                .transform(new CircleTransform())
                 .into(img);
     }
 
     @Override
-    public int getCount() {
-        // List<String> imgList の全要素数を返す
+    public int getCount()
+    {
+        //return the size of the image list
         return imageList.size();
     }
 
     @Override
-    public Object getItem(int position) {
+    public Object getItem(int position)
+    {
         return null;
     }
 
     @Override
-    public long getItemId(int position) {
+    public long getItemId(int position)
+    {
         return 0;
     }
 }

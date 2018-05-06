@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -29,37 +28,35 @@
 
     <GridView
         android:id="@+id/browselist"
-        android:layout_width="100dp"
+        android:layout_width="70dp"
         android:layout_height="match_parent"
-        android:layout_marginLeft="258dp"
+        android:layout_marginLeft="288dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:horizontalSpacing="10dp"
+        android:horizontalSpacing="5dp"
         android:numColumns="1"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="5dp" />
+        android:verticalSpacing="0dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <ImageView
         android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="left|bottom"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
-        android:background="@android:drawable/screen_background_light_transparent"
         android:elevation="0dp"
-        android:src="@drawable/try_on_page_favorite_button_unselected"
-        app:backgroundTint="@android:color/transparent"
-        app:elevation="0dp" />
+        android:src="@drawable/try_on_page_favorite_button_unselected" />
 
     <Button
         android:id="@+id/moreInfoButton"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginLeft="100dp"
-        android:layout_marginTop="450dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="505dp"
+        android:textColor="#fff"
+        android:textSize="18dp"
         android:text="More Info" />
 
     <ImageView
